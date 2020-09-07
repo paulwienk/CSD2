@@ -1,7 +1,8 @@
 import os
 import simpleaudio as sa
+path = os.path.basename(__file__)
+path = __file__.replace(path, 'kick.wav')
 
-print(f'{os.getcwd()}/{__file__}')
-wave_obj = sa.WaveObject.from_wave_file("D:\hku\jaar2\CSD2\python_basics\kick.wav")
+wave_obj = sa.WaveObject.from_wave_file(path)
 play_obj = wave_obj.play()
 play_obj.wait_done()
