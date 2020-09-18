@@ -12,7 +12,7 @@ try:
 # gives error when input is not an integer
 except ValueError:
     print("This isn't a number.")
-
+    exit()
 
 # gives the note durations as a float 
 try: 
@@ -24,9 +24,6 @@ except ValueError:
     print("This isn't a number.")
     exit()
 
-
-print(note_duration)
-
 try: 
     bpm = input ("What is the BPM?: ")
     bpm = int(bpm)
@@ -36,24 +33,10 @@ except ValueError:
     print("This isn't a number.")
     exit()
 
-# de interval tijd in sec
-for i in note_duration:
-    interval_time = 60 / bpm * i
-    print(interval_time)
+# time between sample in seconds
+interval_time = [60 / bpm * i for i in note_duration]
 
-'''
-while True:
-	for t in note_duration:
-		print(t)
-		time.sleep(interval_time)
-
-
-
-
-# plays the file the number of times given
-for i in range(num_playback_times):
+for t in interval_time:
     wave_obj = sa.WaveObject.from_wave_file(path)
     play_obj = wave_obj.play()
-    play_obj.wait_done()
-
-'''
+    time.sleep(t)
