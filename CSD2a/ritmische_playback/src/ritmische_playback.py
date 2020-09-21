@@ -1,37 +1,42 @@
 import time
 import os
 import simpleaudio as sa
+
 path = os.path.basename(__file__)
 path = __file__.replace(path, 'kick.wav')
 
+
 # gives the number of times the file is being played
-try: 
+try:
     num_playback_times = input("How many times would you like to hear the audio: ")
     num_playback_times = int(num_playback_times)
 
-# gives error when input is not an integer
+# gives error when input is not an integer or not exactly 1 number
 except ValueError:
-    print("This isn't a number.")
+    print("Wrong input")
     exit()
+
 
 # gives the note durations as a float 
-try: 
-    note_duration = input('Enter note durations seperated by spaces: ').split(' ') 
-    note_duration = [float(n) for n in note_duration] 
+try:
+    note_duration = input('Enter note durations seperated by spaces: ').split(' ')
+    note_duration = [float(n) for n in note_duration]
 
-# gives error when input is not a float or int
+# gives error when input is not a float or int, or the amount of numbers is not the same as num_playback_times
 except ValueError:
-    print("This isn't a number.")
+    print("Wrong input")
     exit()
 
-try: 
-    bpm = input ("What is the BPM?: ")
+
+try:
+    bpm = input("What is the BPM?: ")
     bpm = int(bpm)
 
 # gives error when input is not an integer
 except ValueError:
     print("This isn't a number.")
     exit()
+
 
 # time between sample in seconds
 interval_time = [60 / bpm * i for i in note_duration]
