@@ -22,10 +22,12 @@ try:
     note_duration = input('Enter note durations seperated by spaces: ').split(' ')
     note_duration = [float(n) for n in note_duration]
 
-# gives error when input is not a float or int, or the amount of numbers is not the same as num_playback_times
+
+# gives error when input is not a float or int
 except ValueError:
     print("Wrong input")
     exit()
+
 
 
 try:
@@ -41,7 +43,16 @@ except ValueError:
 # time between sample in seconds
 interval_time = [60 / bpm * i for i in note_duration]
 
-for t in interval_time:
+
+for t in interval_time[:num_playback_times]:
     wave_obj = sa.WaveObject.from_wave_file(path)
     play_obj = wave_obj.play()
     time.sleep(t)
+
+
+
+
+
+
+
+
