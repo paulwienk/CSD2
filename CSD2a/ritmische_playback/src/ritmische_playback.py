@@ -29,7 +29,6 @@ except ValueError:
     exit()
 
 
-
 try:
     bpm = input("What is the BPM?: ")
     bpm = int(bpm)
