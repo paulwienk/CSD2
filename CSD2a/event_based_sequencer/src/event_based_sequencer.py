@@ -3,6 +3,7 @@ import threading
 import time
 import simpleaudio as sa
 
+# loading samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
 snare = sa.WaveObject.from_wave_file("snare.wav")
 kick = sa.WaveObject.from_wave_file("kick.wav")
@@ -29,6 +30,7 @@ class Clock:
         self.target_time += self.tick_time_seconds
 
 
+# makes the event with arguments timestamp, instrument and the name of the instrument
 def make_event(timestamp, instrument, instrumentname):
     return {
         'timestamp': timestamp,
@@ -37,6 +39,7 @@ def make_event(timestamp, instrument, instrumentname):
     }
 
 
+# makes the sequence (hard coded)
 def make_sequence():
     rhythm = [make_event(0, kick, "kick"),
               make_event(2, snare, "snare"),
@@ -49,19 +52,24 @@ def make_sequence():
               make_event(12, kick, "kick"),
               make_event(14, snare, "snare")]
 
+# hihat on every tick
     for i in range(16):
         rhythm.append(make_event(i, hihat, "hihat"))
 
+# sorting the timestamps
     rhythm.sort(key=lambda x: x['timestamp'])
 
     return rhythm
 
 
+# handles event
 def handle_event(event):
     event['instrument'].play()
 
 
-print('\n'.join(f'{e}' for e in make_sequence()))
+def print_sequence(sequence):
+    sequence.sort(key=lambda x: x['timestamp'])
+    print('\n'.join(f'{e}' for e in sequence))
 
 
 # bpm als argument meegeven??
@@ -75,4 +83,7 @@ def play_sequence(sequence):
         clock.block_until_next_tick()
 
 
-play_sequence(make_sequence())
+sequence = make_sequence()
+print_sequence(sequence)
+play_sequence(sequence)
+
