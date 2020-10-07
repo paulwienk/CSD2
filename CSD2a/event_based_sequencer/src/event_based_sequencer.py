@@ -1,7 +1,6 @@
-import sys
-import threading
-import time
 import simpleaudio as sa
+import time
+
 
 # loading samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
@@ -19,7 +18,7 @@ except ValueError:
     exit()
 
 # converts given BPM in MS
-bpm_in_ms = 60000 / bpm
+bpm_in_ms = (60000 / bpm) * 0.5
 
 
 # timing class written by Wouter Ensink
