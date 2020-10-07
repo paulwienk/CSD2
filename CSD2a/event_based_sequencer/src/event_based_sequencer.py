@@ -8,6 +8,19 @@ hihat = sa.WaveObject.from_wave_file("hihat.wav")
 snare = sa.WaveObject.from_wave_file("snare.wav")
 kick = sa.WaveObject.from_wave_file("kick.wav")
 
+# define BPM
+try:
+    bpm = input("What is the BPM?: ")
+    bpm = int(bpm)
+
+# gives error when input is not an integer
+except ValueError:
+    print("This isn't a number.")
+    exit()
+
+# converts given BPM in MS
+bpm_in_ms = 60000 / bpm
+
 
 # timing class written by Wouter Ensink
 class Clock:
@@ -52,11 +65,11 @@ def make_sequence():
               make_event(12, kick, "kick"),
               make_event(14, snare, "snare")]
 
-# hihat on every tick
+    # hihat on every tick
     for i in range(16):
         rhythm.append(make_event(i, hihat, "hihat"))
 
-# sorting the timestamps
+    # sorting the timestamps
     rhythm.sort(key=lambda x: x['timestamp'])
 
     return rhythm
@@ -67,14 +80,15 @@ def handle_event(event):
     event['instrument'].play()
 
 
+# function to print the sequence in the right order
 def print_sequence(sequence):
     sequence.sort(key=lambda x: x['timestamp'])
     print('\n'.join(f'{e}' for e in sequence))
 
 
-# bpm als argument meegeven??
+# function to play the sequence with the right time interval
 def play_sequence(sequence):
-    clock = Clock(500)
+    clock = Clock(bpm_in_ms)
     clock.start()
     for i in range(16):
         for e in sequence:
@@ -86,4 +100,3 @@ def play_sequence(sequence):
 sequence = make_sequence()
 print_sequence(sequence)
 play_sequence(sequence)
-
