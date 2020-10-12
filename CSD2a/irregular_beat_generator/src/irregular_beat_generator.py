@@ -9,7 +9,7 @@ kick = sa.WaveObject.from_wave_file("kick.wav")
 
 # ask for bpm with error handling
 
-bpm = 90
+bpm = 120
 
 
 def bpm_to_ms(bpm):
@@ -19,73 +19,12 @@ def bpm_to_ms(bpm):
 # converts given BPM in MS
 tick_time_ms = bpm_to_ms(bpm)
 
-'''
-def input_bpm():
-    global tick_time_ms
-    while True:
-        try:
-            bpm = int(input("What is the BPM?: "))
-            tick_time_ms = bpm_to_ms(bpm)
-
-        # gives error when input is not an integer
-        except ValueError:
-            print("This isn't a number. Try again")
-            continue
-
-        else:
-            break
-
-
-# ask for number of beats with error handling
-def input_beats():
-    while True:
-        try:
-            euclidean_beats = int(input("How many beats? "))
-            if euclidean_beats <= 0:
-                print("Number of beats can't be 0. Try again.")
-                continue
-
-        # gives error when input is not an integer
-        except ValueError:
-            print("This isn't a number. Try again")
-            continue
-
-        else:
-            break
-
-
-euclidean_beats = 16
-
-
-# ask for number of pulses with error handling
-def input_pulses():
-    while True:
-        try:
-            euclidean_pulses = int(input("How many pulses? "))
-            if euclidean_pulses <= 0:
-                print("Number of pulses can't be 0. Try again.")
-                continue
-            if euclidean_beats < euclidean_pulses:
-                print("Number of beats has to be higher than the number of pulses. Try again.")
-                continue
-
-        # gives error when input is not an integer
-        except ValueError:
-            print("This isn't a number. Try again.")
-            continue
-
-        else:
-            break
-
-
-euclidean_pulses = 4
-'''
-
 
 def handle_next_command():
     global sequence, tick_time_ms, beats
     command = input(' -> ')
     # make 16 5
+    # time signature 5/4 en dan zelf beats berekenen
     # make <nummer> <nummer>
     # ^beats\s\d+$
     # beats_pattern = regex.compile(r'^beats\s\d+$')
@@ -131,7 +70,7 @@ def handle_event(event):
     event['instrument'].play()
 
 
-# algorithm for a euclidean sequence
+# algorithm for a euclidean sequence, blackbox
 def euclidean_rhythm(beats, pulses):
     rests = beats - pulses
     result = [1] * pulses
@@ -173,14 +112,10 @@ def play_sequence():
     global sequence
     clock = Clock(tick_time_ms)
     clock.start()
-    '''print(euclidean_sequence)'''
-    
 
     while True:
         for i in range(beats):
             i = (i + 1) % beats
-            '''if i == 0:
-                print(euclidean_sequence)'''
 
             for e in sequence:
                 if e['timestamp'] == i:
@@ -188,8 +123,6 @@ def play_sequence():
 
             clock.update_tick_time_ms(tick_time_ms)
             clock.block_until_next_tick()
-           
-            
 
 
 def user_interface_thread():
