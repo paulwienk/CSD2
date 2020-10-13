@@ -3,24 +3,26 @@ import time
 import random
 from threading import Thread
 
+# load samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
 snare = sa.WaveObject.from_wave_file("snare.wav")
 kick = sa.WaveObject.from_wave_file("kick.wav")
 
-# ask for bpm with error handling
 
+# set bpm
 bpm = 120
 
 
+# converts given BPM in MS
 def bpm_to_ms(bpm):
     return (60000 / bpm) * 0.5
 
 
-# converts given BPM in MS
 tick_time_ms = bpm_to_ms(bpm)
 
 
-def handle_next_command():
+# function to handle the commands during the sequence
+def next_command():
     global sequence, tick_time_ms, beats
     command = input(' -> ')
     # make 16 5
@@ -58,6 +60,7 @@ class Clock:
         self.target_time += self.tick_time_seconds
 
 
+# function to make the event with the timestamp, instrument and instrument name
 def make_event(timestamp, instrument, instrumentname):
     return {
         'timestamp': timestamp,
@@ -66,6 +69,7 @@ def make_event(timestamp, instrument, instrumentname):
     }
 
 
+# function that handles the given event
 def handle_event(event):
     event['instrument'].play()
 
@@ -90,6 +94,7 @@ def euclidean_rhythm(beats, pulses):
     return result
 
 
+# function that makes the sequence (for example [1, 0, 0, 1, 0, 1, 0])
 def make_sequence(beats, pulses):
     euclidean_sequence = euclidean_rhythm(beats, pulses)
     sequence_len = len(euclidean_sequence)
@@ -99,6 +104,7 @@ def make_sequence(beats, pulses):
     for i in range(sequence_len):
         rhythm.append(make_event(i, hihat, "hihat"))
 
+    # play a kick on the 1
     for index, item in enumerate(euclidean_sequence):
         if item == 1:
             rhythm.append(make_event(index, kick, "kick"))
@@ -108,6 +114,7 @@ def make_sequence(beats, pulses):
     return rhythm
 
 
+# function that plays the sequence in a loop
 def play_sequence():
     global sequence
     clock = Clock(tick_time_ms)
@@ -125,9 +132,10 @@ def play_sequence():
             clock.block_until_next_tick()
 
 
+# thread to handle multiple functions at the same time
 def user_interface_thread():
     while True:
-        handle_next_command()
+        next_command()
 
 
 t = Thread(target=user_interface_thread)
