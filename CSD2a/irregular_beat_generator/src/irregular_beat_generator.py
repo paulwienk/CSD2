@@ -1,21 +1,28 @@
 import simpleaudio as sa
 import time
 import random
+import regex
 from threading import Thread
+from clock import Clock
+from euclidean_rhythm import euclidean_rhythm
+
 
 # load samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
 snare = sa.WaveObject.from_wave_file("snare.wav")
 kick = sa.WaveObject.from_wave_file("kick.wav")
 
-
 # set bpm
 bpm = 120
+numerator = 4
+denominator = 4
+keep_running = True
+ticks_per_quarternote = 4
 
 
 # converts given BPM in MS
 def bpm_to_ms(bpm):
-    return (60000 / bpm) * 0.5
+    return 60000 / (bpm * ticks_per_quarternote)
 
 
 tick_time_ms = bpm_to_ms(bpm)
@@ -23,41 +30,19 @@ tick_time_ms = bpm_to_ms(bpm)
 
 # function to handle the commands during the sequence
 def next_command():
-    global sequence, tick_time_ms, beats
+    global sequence, tick_time_ms, numerator, keep_running, denominator
     command = input(' -> ')
-    # make 16 5
-    # time signature 5/4 en dan zelf beats berekenen
-    # make <nummer> <nummer>
-    # ^beats\s\d+$
-    # beats_pattern = regex.compile(r'^beats\s\d+$')
-    if command[:4] == 'make':
-        beats = int(command[5:7])
-        pulses = int(command[8])
-        sequence = make_sequence(beats, pulses)
-    if command[:5] == 'tempo':
-        bpm = int(command[6:])
+
+    if command == 'ts':
+        numerator = int(input("Set numerator: "))
+        denominator = int(input("Set denominator: "))
+        sequence = make_sequence()
+    if command == 'bpm':
+        bpm = int(input("Set BPM: "))
         tick_time_ms = bpm_to_ms(bpm)
-
-
-# Clock class by Wouter Ensink
-class Clock:
-    def __init__(self, tick_time_ms: float):
-        self.current_time = 0
-        self.tick_time_seconds = tick_time_ms * 0.001
-        self.target_time = 0
-
-    def start(self) -> None:
-        self.current_time = time.time()
-        self.target_time = self.current_time + self.tick_time_seconds
-
-    def update_tick_time_ms(self, tick_time_ms: float) -> None:
-        self.tick_time_seconds = tick_time_ms * 0.001
-
-    def block_until_next_tick(self) -> None:
-        while self.current_time < self.target_time:
-            self.current_time = time.time()
-            time.sleep(0.001)
-        self.target_time += self.tick_time_seconds
+    if command in ['exit', 'quit']:
+        keep_running = False
+        exit()
 
 
 # function to make the event with the timestamp, instrument and instrument name
@@ -74,35 +59,12 @@ def handle_event(event):
     event['instrument'].play()
 
 
-# algorithm for a euclidean sequence, blackbox
-def euclidean_rhythm(beats, pulses):
-    rests = beats - pulses
-    result = [1] * pulses
-    pivot = 1
-    interval = 2
-
-    while rests > 0:
-        if pivot > len(result):
-            pivot = 1
-            interval += 1
-
-        result.insert(pivot, 0)
-
-        pivot += interval
-        rests -= 1
-
-    return result
-
-
 # function that makes the sequence (for example [1, 0, 0, 1, 0, 1, 0])
-def make_sequence(beats, pulses):
-    euclidean_sequence = euclidean_rhythm(beats, pulses)
+def make_sequence():
+    euclidean_sequence = euclidean_rhythm(ticks_per_bar(), 5)
     sequence_len = len(euclidean_sequence)
     rhythm = []
-
-    # hihat on every tick
-    for i in range(sequence_len):
-        rhythm.append(make_event(i, hihat, "hihat"))
+    print(ticks_per_bar())
 
     # play a kick on the 1
     for index, item in enumerate(euclidean_sequence):
@@ -114,15 +76,30 @@ def make_sequence(beats, pulses):
     return rhythm
 
 
+def ticks_per_denominator():
+    denominators_in_quarter = denominator / 4
+    return ticks_per_quarternote / denominators_in_quarter
+
+
+def ticks_per_bar():
+    return ticks_per_denominator() * numerator
+
+
+total_ticks = numerator * ticks_per_quarternote
+
+
 # function that plays the sequence in a loop
 def play_sequence():
     global sequence
     clock = Clock(tick_time_ms)
     clock.start()
 
-    while True:
-        for i in range(beats):
-            i = (i + 1) % beats
+    while keep_running:
+        for i in range(total_ticks):
+            i = (i + 1) % total_ticks
+
+            if not keep_running:
+                return
 
             for e in sequence:
                 if e['timestamp'] == i:
@@ -140,6 +117,5 @@ def user_interface_thread():
 
 t = Thread(target=user_interface_thread)
 t.start()
-beats, p = 16, 4
-sequence = make_sequence(beats, p)
+sequence = make_sequence()
 play_sequence()
