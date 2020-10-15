@@ -1,11 +1,10 @@
-import simpleaudio as sa
-import time
 import random
-import math
 from threading import Thread
-from clock import Clock
-from euclidean_rhythm import euclidean_rhythm
 
+import simpleaudio as sa
+
+from clock import Clock
+from euclidean import euclidean_rhythm
 
 # load samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
@@ -34,25 +33,26 @@ def bpm_to_ms(bpm):
     return 60000 / (bpm * ticks_per_quarternote)
 
 
-euclidean_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
+first_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
 tick_time_ms = bpm_to_ms(bpm)
 
 print("Welcome to Paul's Beat Generator!")
+print("")
 print("Here are a few commands to get you started:")
 print("- type 'ts' to set a new time signature (numerator and denominator)")
 print("- type 'bpm' to set a new BPM")
 print("- type 'exit' or 'quit' to quit the generator")
-print("\n")
+print("")
 print("Current time signature: 4/4")
 print("Current BPM: 120")
-print("Current sequence:"), print(euclidean_sequence)
-print("\n")
+print("Current sequence:"), print(first_sequence)
+print("")
 print("Enjoy!")
 
 
 # function to handle the commands during the sequence
 def next_command():
-    global sequence, tick_time_ms, numerator, keep_running, denominator
+    global sequence, tick_time_ms, numerator, keep_running, denominator, bpm
     command = input(' -> ')
 
     if command not in ['ts', 'bpm', 'exit', 'quit']:
@@ -76,11 +76,11 @@ def next_command():
             try:
                 denominator = int(input("Set denominator: "))
                 if denominator not in [2, 4, 8, 16, 32, 64]:
-                    print("Denominator has to be a power of 2 (2, 4, 8, 16 ...")
+                    print("Denominator has to be a power of 2 (2, 4, 8, 16 ...). Try again.")
                     continue
 
-                print(euclidean_sequence)
-
+                make_sequence()
+                print_sequence()
                 break
 
             except ValueError:
@@ -124,10 +124,13 @@ def handle_event(event):
     event['instrument'].play()
 
 
+euclidean_sequence = 0
+
+
 # function that makes the sequence (for example [1, 0, 0, 1, 0, 1, 0])
 def make_sequence():
+    global euclidean_sequence
     euclidean_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
-    sequence_len = len(euclidean_sequence)
     rhythm = []
 
     for index, item in enumerate(euclidean_sequence):
@@ -144,7 +147,8 @@ def make_sequence():
     return rhythm
 
 
-total_ticks = numerator * ticks_per_quarternote
+def print_sequence():
+    print(euclidean_sequence)
 
 
 # function that plays the sequence in a loop
