@@ -61,16 +61,23 @@ def next_command():
     command = input(' -> ')
 
     # checks if one of the rights commands is given
-    if command not in ['ts', 'bpm', 'exit', 'quit', 'midi']:
+    if command not in ['ts', 'TS', 'Ts',
+                       'bpm', 'BPM', 'Bpm',
+                       'exit', 'Exit', 'EXIT',
+                       'midi', 'Midi', 'MIDI']:
         print("Wrong input. Try again.")
 
     # sets a new time signature with error handling
-    if command == 'ts':
+    if command in ['ts', 'TS', 'Ts']:
         while True:
             try:
                 numerator = int(input("Set numerator: "))
                 if numerator <= 1:
                     print("Numerator has to be higher than 1. Try again.")
+                    continue
+
+                if numerator >= 100:
+                    print('Numerator has to be lower than 100. Try again.')
                     continue
 
                 break
@@ -81,8 +88,8 @@ def next_command():
 
         while True:
             try:
-                denominator = int(input("Set denominator: "))
-                if denominator not in [2, 4, 8, 16, 32, 64]:
+                den = int(input("Set denominator: "))
+                if den not in [2, 4, 8, 16, 32, 64]:
                     print("Denominator has to be a power of 2 (2, 4, 8, 16 ...). Try again.")
                     continue
 
@@ -97,12 +104,15 @@ def next_command():
         sequence = make_sequence()
 
     # sets a new bpm with error handling
-    if command == 'bpm':
+    if command in ['bpm', 'BPM', 'Bpm']:
         while True:
             try:
                 bpm = int(input("Set BPM: "))
                 if bpm <= 1:
                     print("BPM has to be higher than 1. Try again.")
+                    continue
+                if bpm >= 400:
+                    print("BPM has to be lower than 400. Try again.")
                     continue
 
             except ValueError:
@@ -114,7 +124,7 @@ def next_command():
         tick_time_ms = bpm_to_ms(bpm)
 
     # saves the generated beat to a MIDI file with error handling
-    if command == "midi":
+    if command in ["midi", "MIDI", "Midi"]:
         while True:
             try:
                 answer = str(input("Would you like to save the beat as a MIDI file? (yes/no): "))
@@ -133,9 +143,8 @@ def next_command():
                 print("Input has to be 'yes' or 'no'. Try again")
 
     # quits the generator
-    if command in ['exit', 'quit']:
+    if command in ['exit', 'Exit', 'EXIT']:
         keep_running = False
-
         print("\nThank you for using Paul's Beat Generator!")
         exit()
 
