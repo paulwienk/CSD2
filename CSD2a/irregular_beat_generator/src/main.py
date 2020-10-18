@@ -43,6 +43,7 @@ print("Here are a few commands to get you started:")
 print("- type 'ts' to set a new time signature (numerator and denominator)")
 print("- type 'bpm' to set a new BPM")
 print("- type 'exit' or 'quit' to quit the generator")
+print("- type 'midi' to save the beat as a MIDI file")
 print("")
 print("Current time signature: 4/4")
 print("Current BPM: 120")
@@ -56,7 +57,7 @@ def next_command():
     global sequence, tick_time_ms, numerator, keep_running, denominator, bpm
     command = input(' -> ')
 
-    if command not in ['ts', 'bpm', 'exit', 'quit']:
+    if command not in ['ts', 'bpm', 'exit', 'quit', 'midi']:
         print("Wrong input. Try again.")
 
     if command == 'ts':
@@ -110,6 +111,24 @@ def next_command():
         keep_running = False
         exit()
 
+    if command == "midi":
+        while True:
+            try:
+                answer = str(input("Would you like to save the beat as a MIDI file? (yes/no): "))
+
+                if answer == "yes":
+                    make_midi_file(sequence)
+                    break
+
+                if answer == "no":
+                    break
+
+                if answer not in ["yes", "no"]:
+                    print("Input has to be 'yes' or 'no'. Try again")
+
+            except ValueError:
+                print("Input has to be 'yes' or 'no'. Try again")
+
 
 # function to make the event with the timestamp, instrument and instrument name
 def make_event(timestamp, instrument, instrumentname):
@@ -142,7 +161,6 @@ def make_sequence():
         # play a snare on the 0 with a 20% chance of happening
         if item == random.choice([0, 2, 3, 4, 5]):
             rhythm.append(make_event(index, snare, "snare"))
-
         # play a hihat on the 0 or 1 with a 66% chance of happening
         if item == random.choice([0, 1, 2]):
             rhythm.append(make_event(index, hihat, "hihat"))
@@ -192,19 +210,25 @@ def make_midi_file(list):
     tempo = bpm  # In BPM
     volume = 100  # 0-127, as per the MIDI standard
     track = 0
-    mid.addTempo(track, time, tempo)
+    mid.addTempo(track, time, tempo * 4)
 
     for i in list:
-        mid.addNote(track, channel, pitch, duration, tempo, volume)
+        if i['instrumentname'] == 'kick':
+            pitch = 35
+        elif i['instrumentname'] == 'snare':
+            pitch = 39
+        elif i['instrumentname'] == 'hihat':
+            pitch = 42
+        mid.addNote(track, channel, pitch, i['timestamp'], duration, volume)
+        time = time + 1
 
-    with open("ja.midi", "wb") as output_file:
+    with open("sequence.mid", "wb") as output_file:
         mid.writeFile(output_file)
 
-
-make_midi_file(euclidean_sequence)
 
 
 t = Thread(target=user_interface_thread)
 t.start()
+make_sequence()
 sequence = make_sequence()
 play_sequence()
