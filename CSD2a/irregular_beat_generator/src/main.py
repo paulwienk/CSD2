@@ -5,6 +5,7 @@ import simpleaudio as sa
 
 from clock import Clock
 from euclidean import euclidean_rhythm
+from midiutil.MidiFile import MIDIFile
 
 # load samples
 hihat = sa.WaveObject.from_wave_file("hihat.wav")
@@ -130,6 +131,7 @@ euclidean_sequence = 0
 # function that makes the sequence (for example [1, 0, 0, 1, 0, 1, 0])
 def make_sequence():
     global euclidean_sequence
+
     euclidean_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
     rhythm = []
 
@@ -140,6 +142,7 @@ def make_sequence():
         # play a snare on the 0 with a 20% chance of happening
         if item == random.choice([0, 2, 3, 4, 5]):
             rhythm.append(make_event(index, snare, "snare"))
+
         # play a hihat on the 0 or 1 with a 66% chance of happening
         if item == random.choice([0, 1, 2]):
             rhythm.append(make_event(index, hihat, "hihat"))
@@ -176,6 +179,29 @@ def play_sequence():
 def user_interface_thread():
     while True:
         next_command()
+
+
+def make_midi_file(list):
+    mid = MIDIFile(1)  # One track, defaults to format 1 (tempo track is created
+    # automatically)
+
+    channel = 9
+    pitch = 35
+    time = 0  # In beats
+    duration = 0.5  # In beats
+    tempo = bpm  # In BPM
+    volume = 100  # 0-127, as per the MIDI standard
+    track = 0
+    mid.addTempo(track, time, tempo)
+
+    for i in list:
+        mid.addNote(track, channel, pitch, duration, tempo, volume)
+
+    with open("ja.midi", "wb") as output_file:
+        mid.writeFile(output_file)
+
+
+make_midi_file(euclidean_sequence)
 
 
 t = Thread(target=user_interface_thread)
