@@ -1,4 +1,4 @@
-# algorithm for a euclidean sequence, blackbox
+# algorithm for a euclidean sequence
 def euclidean_rhythm(beats, pulses):
     rests = beats - pulses
     result = [1] * pulses

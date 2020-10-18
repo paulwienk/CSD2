@@ -1,3 +1,6 @@
+# Paul's Beat Generator
+# Written by Paul Wienk
+
 import random
 from threading import Thread
 
@@ -12,7 +15,7 @@ hihat = sa.WaveObject.from_wave_file("hihat.wav")
 snare = sa.WaveObject.from_wave_file("snare.wav")
 kick = sa.WaveObject.from_wave_file("kick.wav")
 
-# set bpm
+# default values to begin the first sequence
 bpm = 120
 numerator = 4
 denominator = 4
@@ -20,6 +23,7 @@ ticks_per_quarternote = 4
 keep_running = True
 
 
+# function to determine the amount of ticks in a sequence based on the given numerator
 def ticks_per_denominator():
     denominators_in_quarter = denominator / 4
     return ticks_per_quarternote / denominators_in_quarter
@@ -34,22 +38,21 @@ def bpm_to_ms(bpm):
     return 60000 / (bpm * ticks_per_quarternote)
 
 
+euclidean_sequence = 0
 first_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
 tick_time_ms = bpm_to_ms(bpm)
 
+# text for clear user interface
 print("Welcome to Paul's Beat Generator!")
-print("")
-print("Here are a few commands to get you started:")
+print("\nHere are a few commands to get you started:")
 print("- type 'ts' to set a new time signature (numerator and denominator)")
 print("- type 'bpm' to set a new BPM")
 print("- type 'exit' or 'quit' to quit the generator")
 print("- type 'midi' to save the beat as a MIDI file")
-print("")
-print("Current time signature: 4/4")
+print("\nCurrent time signature: 4/4")
 print("Current BPM: 120")
 print("Current sequence:"), print(first_sequence)
-print("")
-print("Enjoy!")
+print("\nEnjoy!\n")
 
 
 # function to handle the commands during the sequence
@@ -57,9 +60,11 @@ def next_command():
     global sequence, tick_time_ms, numerator, keep_running, denominator, bpm
     command = input(' -> ')
 
+    # checks if one of the rights commands is given
     if command not in ['ts', 'bpm', 'exit', 'quit', 'midi']:
         print("Wrong input. Try again.")
 
+    # sets a new time signature with error handling
     if command == 'ts':
         while True:
             try:
@@ -91,6 +96,7 @@ def next_command():
 
         sequence = make_sequence()
 
+    # sets a new bpm with error handling
     if command == 'bpm':
         while True:
             try:
@@ -107,17 +113,14 @@ def next_command():
 
         tick_time_ms = bpm_to_ms(bpm)
 
-    if command in ['exit', 'quit']:
-        keep_running = False
-        exit()
-
+    # saves the generated beat to a MIDI file with error handling
     if command == "midi":
         while True:
             try:
                 answer = str(input("Would you like to save the beat as a MIDI file? (yes/no): "))
-
                 if answer == "yes":
                     make_midi_file(sequence)
+                    print("MIDI file saved as 'sequence'")
                     break
 
                 if answer == "no":
@@ -128,6 +131,13 @@ def next_command():
 
             except ValueError:
                 print("Input has to be 'yes' or 'no'. Try again")
+
+    # quits the generator
+    if command in ['exit', 'quit']:
+        keep_running = False
+
+        print("\nThank you for using Paul's Beat Generator!")
+        exit()
 
 
 # function to make the event with the timestamp, instrument and instrument name
@@ -142,9 +152,6 @@ def make_event(timestamp, instrument, instrumentname):
 # function that handles the given event
 def handle_event(event):
     event['instrument'].play()
-
-
-euclidean_sequence = 0
 
 
 # function that makes the sequence (for example [1, 0, 0, 1, 0, 1, 0])
@@ -168,6 +175,7 @@ def make_sequence():
     return rhythm
 
 
+# function used to print the sequence every time you change the time signature
 def print_sequence():
     print(euclidean_sequence)
 
@@ -199,19 +207,21 @@ def user_interface_thread():
         next_command()
 
 
+# function to create the MIDI sequence
 def make_midi_file(list):
-    mid = MIDIFile(1)  # One track, defaults to format 1 (tempo track is created
-    # automatically)
+    mid = MIDIFile(1)
 
+    # set default values
     channel = 9
     pitch = 35
-    time = 0  # In beats
-    duration = 0.5  # In beats
-    tempo = bpm  # In BPM
-    volume = 100  # 0-127, as per the MIDI standard
+    time = 0
+    duration = 0.5
+    tempo = bpm
+    volume = 100
     track = 0
     mid.addTempo(track, time, tempo * 4)
 
+    # for loop which checks if the instrument name is the same in sequence
     for i in list:
         if i['instrumentname'] == 'kick':
             pitch = 35
@@ -219,12 +229,14 @@ def make_midi_file(list):
             pitch = 39
         elif i['instrumentname'] == 'hihat':
             pitch = 42
+
+        # adds midi note to midi file
         mid.addNote(track, channel, pitch, i['timestamp'], duration, volume)
         time = time + 1
 
-    with open("sequence.mid", "wb") as output_file:
+    # creates the final midi file
+    with open("sequence.midi", "wb") as output_file:
         mid.writeFile(output_file)
-
 
 
 t = Thread(target=user_interface_thread)
