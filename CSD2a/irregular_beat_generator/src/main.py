@@ -55,6 +55,19 @@ print("Current sequence:"), print(first_sequence)
 print("\nEnjoy!\n")
 
 
+# function to make sure the input is above 0
+def ask_for_number(message):
+    while True:
+        try:
+            number = int(input(message))
+            if number > 0:
+                return number
+            print("Number must be higher than 0")
+
+        except ValueError:
+            print("Input must be a number. Try again.")
+
+
 # function to handle the commands during the sequence
 def next_command():
     global sequence, tick_time_ms, numerator, keep_running, denominator, bpm
@@ -70,53 +83,38 @@ def next_command():
     # sets a new time signature with error handling
     if command in ['ts', 'TS', 'Ts']:
         while True:
-            try:
-                numerator = int(input("Set numerator: "))
-                if numerator <= 1:
-                    print("Numerator has to be higher than 1. Try again.")
-                    continue
-
-                if numerator >= 100:
-                    print('Numerator has to be lower than 100. Try again.')
-                    continue
-
-                break
-
-            except ValueError:
-                print("Numerator has to be a number. Try again.")
+            numerator = ask_for_number("Set numerator: ")
+            if numerator <= 1:
+                print("Numerator has to be higher than 1. Try again.")
                 continue
+
+            if numerator >= 100:
+                print('Numerator has to be lower than 100. Try again.')
+                continue
+
+            break
 
         while True:
-            try:
-                den = int(input("Set denominator: "))
-                if den not in [2, 4, 8, 16, 32, 64]:
-                    print("Denominator has to be a power of 2 (2, 4, 8, 16 ...). Try again.")
-                    continue
-
-                make_sequence()
-                print_sequence()
-                break
-
-            except ValueError:
-                print("Denominator has to be a number. Try again.")
+            denominator = int(input("Set denominator: "))
+            if denominator not in [2, 4, 8, 16, 32, 64]:
+                print("Denominator has to be a power of 2 (2, 4, 8, 16 ...). Try again.")
                 continue
+
+            make_sequence()
+            print_sequence()
+            break
 
         sequence = make_sequence()
 
     # sets a new bpm with error handling
     if command in ['bpm', 'BPM', 'Bpm']:
         while True:
-            try:
-                bpm = int(input("Set BPM: "))
-                if bpm <= 1:
-                    print("BPM has to be higher than 1. Try again.")
-                    continue
-                if bpm >= 400:
-                    print("BPM has to be lower than 400. Try again.")
-                    continue
-
-            except ValueError:
-                print("BPM has to be a number. Try again.")
+            bpm = ask_for_number("Set BPM: ")
+            if bpm <= 1:
+                print("BPM has to be higher than 1. Try again.")
+                continue
+            if bpm >= 400:
+                print("BPM has to be lower than 400. Try again.")
                 continue
 
             break
