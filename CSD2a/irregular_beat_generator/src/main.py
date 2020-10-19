@@ -52,7 +52,7 @@ print("- type 'midi' to save the beat as a MIDI file")
 print("\nCurrent time signature: 4/4")
 print("Current BPM: 120")
 print("Current sequence:"), print(first_sequence)
-print("\nEnjoy!\n")
+print("\nEnjoy!")
 
 
 # function to make sure the input is above 0
@@ -71,7 +71,7 @@ def ask_for_number(message):
 # function to handle the commands during the sequence
 def next_command():
     global sequence, tick_time_ms, numerator, keep_running, denominator, bpm
-    command = input(' -> ')
+    command = input('\n -> ')
 
     # checks if one of the rights commands is given
     if command not in ['ts', 'TS', 'Ts',
@@ -95,7 +95,7 @@ def next_command():
             break
 
         while True:
-            denominator = int(input("Set denominator: "))
+            denominator = ask_for_number("Set denominator: ")
             if denominator not in [2, 4, 8, 16, 32, 64]:
                 print("Denominator has to be a power of 2 (2, 4, 8, 16 ...). Try again.")
                 continue
