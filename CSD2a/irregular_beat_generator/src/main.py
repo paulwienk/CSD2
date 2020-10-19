@@ -43,7 +43,7 @@ first_sequence = euclidean_rhythm(ticks_per_bar(), denominator)
 tick_time_ms = bpm_to_ms(bpm)
 
 # text for clear user interface
-print("Welcome to Paul's Beat Generator!")
+print("\n\nWelcome to Paul's Beat Generator!")
 print("\nHere are a few commands to get you started:")
 print("- type 'ts' to set a new time signature (numerator and denominator)")
 print("- type 'bpm' to set a new BPM")
