@@ -20,3 +20,6 @@ De UI leidt je door het programma heen met de nodige instructies:
 
 Bij command 'midi' wordt gevraagd aan de gebruiker of de laatst gegenereerde sequence moet worden opgeslagen.
 Deze file wordt vervolgens met naam 'sequence' toegevoegd aan de src map.
+
+
+De code is met comments uitgelegd in de main.py file. 
