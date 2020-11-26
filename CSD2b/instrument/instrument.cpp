@@ -11,7 +11,6 @@ public:
 
 private:
     std::string playsound;
-
 };
 
 
@@ -20,14 +19,11 @@ void Instrument::play()
     std::cout << playsound << "\n";
 }
 
+//direct initialization
+Instrument::Instrument(std::string sound) : playsound(sound) {}
 
-Instrument::Instrument(std::string sound)
-{
-    playsound = sound;
-}
 
-Instrument::~Instrument()
-{}
+Instrument::~Instrument() {}
 
 
 int main ()
@@ -36,5 +32,4 @@ int main ()
     Instrument myInstrument2("flflflflfl");
     myInstrument.play();
     myInstrument2.play();
-
 }
