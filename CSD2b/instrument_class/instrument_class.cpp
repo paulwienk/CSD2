@@ -2,6 +2,7 @@
 #include <string>
 
 
+// class of the instrument
 class Instrument
 {
 public:
@@ -14,18 +15,21 @@ private:
 };
 
 
+// play function which prints the sounds
 void Instrument::play()
 {
     std::cout << playsound << "\n";
 }
 
-//direct initialization
+
+// direct initialization for the constructor
 Instrument::Instrument(std::string sound) : playsound(sound) {}
 
 
 Instrument::~Instrument() {}
 
 
+// main function with 2 objects which generates 2 different sounds
 int main ()
 {
     Instrument myInstrument("pweeeeep");
