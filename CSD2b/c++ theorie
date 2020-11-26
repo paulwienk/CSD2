@@ -1,0 +1,177 @@
+//bibliotheek importen
+#include <iostream>
+
+//elk c++ programma moet exact 1 main hebben, daar begint het script
+//() geeft aan dat het een functie is
+main()
+{
+  std::cout << "Hello World";
+}
+//cout = console out
+// << je stuurt iets in die richting, een stream.
+// de string hello world world naar de cout gestuurd
+//std = standard library
+
+____________________________________________________________
+//vanuit git bash om het programma te compilen:
+g++ naamprogramma.cpp -o anderenaamofdezelfde
+
+//run
+./anderenaamofdezelfde
+
+____________________________________________________________
+//compileren en linken c++ files
+.h = header file
+.cpp = c++ file ->
+.s = assembly ->
+.o = object ->
+executable
+
+g++ -S helloworld.cpp -> maakt een helloworld.s
+lvim helloworld.s -> assembly file
+g++ -c helloworld.s -> maakt een helloworld.o
+lvim helloworld.o -> object file
+g++ -o helloworld helloworld.o -> maakt een helloworld.exe
+
+chmod 755 naamprogramma.cpp -> geeft hem executable rights
+
+cp helloworld.cpp hello.h
+cp helloworld.cpp
+
+____________________________________________________________
+
+#include <iostream>
+
+//void = niks. de functie doet niks en geeft niks terug
+//void is een type
+
+//constructor en destructor. hebben zelfde naam als de class, hoofdlettergevoelig
+//alles is bij default private. als je wilt dat je ze van buiten kan benaderen dan moett je public erin zetten
+class World
+{
+public:
+  World(int newyear); //constructor
+  ~World(); //destructor
+  void hello();
+private:
+  int year;
+};
+
+//World::hello zegt dat hij specifiek moet kijken naar hello binnen class World
+void World::hello()
+{
+  std::cout << "Hello World, in the year " << year << std::endl;
+}
+
+World::World(int newyear)
+{
+  std::cout << "this world begins/n";
+  year = newyear;
+}
+
+World::~World()
+{
+  std::cout << "this world ends/n";
+}
+
+//world maakt een object en die wordt weer aangeroepen met hello
+main()
+{
+World myWorld(2020);
+  myWorld.hello();
+
+}
+
+____________________________________________________________________________
+CISKA LES 2
+
+#include <iostream>
+
+/*
+ * NOTE
+ * This example uses functionality from c++11
+ * To compile this file without the use of a make file, run:
+ * g++ -std=c++11  oscillator_extended.cpp -o osc
+ *
+ * other options:
+ * c++11 / c++14 / c++17
+ */
+
+//access specifier: public, protected, private
+// public: vanuit buitenaf te gebruiken
+// protected, private: door het object zelf te gebruiken
+
+
+class Oscillator {
+//access specifier
+public:
+  Oscillator();
+  Oscillator(float freq);
+  ~Oscillator();
+  void setFreq(float freq);
+  float getFreq();
+  void setAmp(float amp);
+  float getAmp();
+  // TODO add setter, getter and field for amplitude
+//access specifier
+protected:
+  float freq;
+  float amp;
+};
+
+// constructor delegation
+Oscillator::Oscillator () : Oscillator(220)
+{}
+
+// initialisation list
+Oscillator::Oscillator(float freq) : freq(freq) {
+  std::cout << "Oscillator - constructor Oscillator(float freq)\n";
+}
+
+
+Oscillator::~Oscillator()
+{
+  std::cout << "Oscillator - destructor\n";
+}
+
+void Oscillator::setFreq(float freq)
+{
+  if(freq > 0 && freq < 22050) {
+    // this pointer, freq of class Oscillator
+    this->freq = freq;
+  } else {
+    std::cout << "Incorrect frequency, please pass values between (0,22050)\n";
+  }
+
+}
+
+float Oscillator::getFreq()
+{
+  return freq;
+}
+
+void Oscillator::setAmp(float amp)
+{
+    this->amp = amp;
+}
+
+float Oscillator::getAmp()
+{
+    return amp;
+}
+
+int main ()
+{
+  Oscillator osc;
+  //osc.setFreq(0);
+  std::cout << "Freq field contains the value: " << osc.getFreq() << " and the amplitude is " << osc.getAmp() << "\n";
+
+
+  return 0;
+}
+
+________________________________________________________________________________
+splitsen
+
+zie foto
+#include <oscillator.h> bij main file

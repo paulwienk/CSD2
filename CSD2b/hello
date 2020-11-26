@@ -1,0 +1,36 @@
+//bibliotheek importen
+#include <iostream>
+
+//elk c++ programma moet exact 1 main hebben, daar begint het script
+//() geeft aan dat het een functie is
+main()
+{
+  std::cout << "Hello World";
+}
+//cout = console out
+// << je stuurt iets in die richting, een stream.
+// de string hello world world naar de cout gestuurd
+//std = standard library
+
+____________________________________________________________
+//vanuit git bash om het programma te compilen:
+g++ naamprogramma.cpp -o anderenaamofzo
+
+//run
+./anderenaamofzo
+
+____________________________________________________________
+//compileren en linken c++ files
+.h = header file
+.cpp = c++ file ->
+.s = assembly ->
+.o = object ->
+executableg++
+
+g++ -S helloworld.cpp -> maakt een helloworld.s
+lvim helloworld.s -> assembly file
+g++ -c helloworld.s -> maakt een helloworld.o
+lvim helloworld.o -> object file
+g++ -o helloworld helloworld.o -> maakt een helloworld.exe
+
+chmod 755 naamprogramma.cpp -> geeft hem executable rights
