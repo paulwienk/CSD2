@@ -1,4 +1,4 @@
-# algorithm for a euclidean sequence
+# algorithm for a euclidean sequence from www.kountanis.com/2017/06/13/python-euclidean/
 def euclidean_rhythm(beats, pulses):
     rests = beats - pulses
     result = [1] * pulses
