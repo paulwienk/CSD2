@@ -1,0 +1,11 @@
+# Makefile by Paul Wienk
+
+
+instrument_class: instrument_class.o instrument_class_main.o
+	g++ -o instrument_class instrument_class.o instrument_class_main.o
+
+.cpp.o:
+	g++ -c $<
+
+clean:
+	/bin/rm -f instrument_class *.o
