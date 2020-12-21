@@ -1,9 +1,10 @@
-// deels ciska deels paul
+//
+// Created by paulw on 21-12-2020.
+//
 
 #define _USE_MATH_DEFINES
-#include "square.h"
+#include "saw.h"
 #include <math.h>
-
 
 // modulo function by Wouter Ensink
 template <typename T>
@@ -15,38 +16,39 @@ inline constexpr T modulo (T dividend, const T divisor) noexcept
     return dividend;
 }
 
-Square::Square(float frequency, double samplerate) : frequency(frequency),
-                                                 samplerate(samplerate), amplitude(1.0), sample(0), phase(0)
+Saw::Saw(float frequency, double samplerate) : frequency(frequency),
+                                                     samplerate(samplerate), amplitude(1.0), sample(0), phase(0)
 {
-    std::cout << "Square - constructor\n";
+    std::cout << "Saw - constructor\n";
 }
 
 
 
-Square::~Square() {
-    std::cout << "Square - destructor\n";
+Saw::~Saw() {
+    std::cout << "Saw - destructor\n";
 }
 
 
-float Square::getSample() {
+float Saw::getSample() {
     return sample;
 }
 
-void Square::tick() {
+// rekent de volgende sample uit
+void Saw::tick() {
     auto phaseIncrement = frequency / samplerate;
     phase = modulo (phase + phaseIncrement, 1.0);
-    if (phase < 0.5) {sample = 1;}
-    else {sample = -1;}
+    sample = (phase * 2) - 1;
+
 }
 
 //getters and setters
-void Square::setFrequency(float frequency)
+void Saw::setFrequency(float frequency)
 {
     // TODO add check to see if parameter is valid
     this->frequency = frequency;
 }
 
-float Square::getFrequency()
+float Saw::getFrequency()
 {
     return frequency;
 }

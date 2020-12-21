@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="84085cf1-5ce9-4216-a701-a2886f5a253f" name="synthsong" defaultType="MAKE">
+      <configuration id="a8e1a2c4-69ac-4a65-a250-8e2ded1a4a61" name="synthsong" toolchainName="MinGW">
+        <build type="MAKE">
+          <make targetName="example" />
+        </build>
+      </configuration>
+    </target>
+  </component>
+</project>

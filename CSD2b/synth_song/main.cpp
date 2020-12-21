@@ -4,6 +4,7 @@
 #include "math.h"
 #include "sine.h"
 #include "square.h"
+#include "saw.h"
 #define PI_2 6.28318530717959
 
 int main(int argc,char **argv)
@@ -15,10 +16,11 @@ int main(int argc,char **argv)
   jack.init("example.exe");
   double samplerate = jack.getSamplerate();
   Sine sine(220, samplerate);
-  Square square(10000, samplerate);
+  Square square(600, samplerate);
+  Saw saw(880, samplerate);
 
   //assign a function to the JackModule::onProces
-  jack.onProcess = [&sine, &square](jack_default_audio_sample_t *inBuf,
+  jack.onProcess = [&sine, &square, &saw](jack_default_audio_sample_t *inBuf,
      jack_default_audio_sample_t *outBuf, jack_nframes_t nframes) {
 
     static float amplitude = 0.15;
@@ -28,6 +30,8 @@ int main(int argc,char **argv)
       sine.tick();
       outBuf[i] += square.getSample() * amplitude;
       square.tick();
+      outBuf[i] += saw.getSample() * amplitude;
+      saw.tick();
     }
 
     return 0;

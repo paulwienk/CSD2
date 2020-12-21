@@ -2,16 +2,16 @@
 // Created by paulw on 21-12-2020.
 //
 
-#ifndef SYNTH_SONG_SQUARE_H
-#define SYNTH_SONG_SQUARE_H
+#ifndef SYNTH_SONG_SAW_H
+#define SYNTH_SONG_SAW_H
 #include <iostream>
 
-class Square
+class Saw
 {
 public:
     //Constructor and destructor
-    Square(float frequency, double samplerate);
-    ~Square();
+    Saw(float frequency, double samplerate);
+    ~Saw();
 
     //return the current sample
     float getSample();
@@ -33,4 +33,5 @@ private:
     float sample;
 };
 
-#endif //INC_03_SOUNDINGSINECLASS_SQUARE_H
+
+#endif //SYNTH_SONG_SAW_H
