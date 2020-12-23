@@ -16,7 +16,7 @@ int main(int argc,char **argv)
   jack.init("example.exe");
   double samplerate = jack.getSamplerate();
   Sine sine(220, samplerate);
-  Square square(600, samplerate);
+  Square square(440, samplerate);
   Saw saw(880, samplerate);
 
   //assign a function to the JackModule::onProces

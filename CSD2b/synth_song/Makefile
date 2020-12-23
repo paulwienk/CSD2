@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -Ic:/Program\ Files/JACK2/include -Wall -std=c++1z
 LDFLAGS= -Lc:/Program\ Files/JACK2/lib32 -llibjack
-SOURCE= sine.o square.o saw.o main.o jack_module.o
+SOURCE= sine.o square.o saw.o oscillator.o main.o jack_module.o
 
 example: $(SOURCE)
 	$(CXX) -o $@ $(CXXFLAGS) $(SOURCE) $(LDFLAGS)

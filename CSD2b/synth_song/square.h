@@ -1,36 +1,16 @@
-//
-// Created by paulw on 21-12-2020.
-//
-
 #ifndef SYNTH_SONG_SQUARE_H
 #define SYNTH_SONG_SQUARE_H
 #include <iostream>
+#include "oscillator.h"
 
-class Square
+class Square : public Oscillator
 {
 public:
     //Constructor and destructor
-    Square(float frequency, double samplerate);
-    ~Square();
+    Square(double frequency, double sampleRate) : Oscillator(frequency, sampleRate) {}
 
-    //return the current sample
-    float getSample();
-    // go to next sample
     void tick();
-
-    //getters and setters
-    void setFrequency(float frequency);
-    float getFrequency();
-
-    //NOTE - do we need a setter for phase? for now -> not using one
-
-private:
-    double samplerate;
-    float amplitude;
-    double frequency;
-    double phase;
-    // contains the current sample
-    float sample;
 };
+
 
 #endif //INC_03_SOUNDINGSINECLASS_SQUARE_H
