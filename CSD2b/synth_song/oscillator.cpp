@@ -35,3 +35,8 @@ float Oscillator::getFrequency()
 {
     return frequency;
 }
+
+void Oscillator::setAmplitude(float amp)
+{
+    amplitude = amp;
+}

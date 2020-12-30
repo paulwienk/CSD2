@@ -6,5 +6,5 @@
 void Saw::tick()
 {
     updatePhase();
-    sample = (phase * 2) - 1;
+    sample = ((phase * 2) - 1) * amplitude;
 }

@@ -13,4 +13,4 @@ public:
 };
 
 
-#endif //INC_03_SOUNDINGSINECLASS_SQUARE_H
+#endif

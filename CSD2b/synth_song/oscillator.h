@@ -11,6 +11,7 @@ public:
     float getSample();
 
     //getters and setters
+    void setAmplitude(float);
     void setFrequency(float frequency);
     float getFrequency();
 

@@ -1,0 +1,3 @@
+[submodule "CSD2b/synth_song/mingw-std-threads"]
+	path = CSD2b/synth_song/mingw-std-threads
+	url = https://github.com/meganz/mingw-std-threads.git
