@@ -8,8 +8,9 @@ class Saw : public Oscillator
 public:
     //Constructor and destructor
     Saw(double frequency, double sampleRate) : Oscillator(frequency, sampleRate) {}
+    ~Saw() override {}
 
-    void tick();
+    void tick() override;
 };
 
 

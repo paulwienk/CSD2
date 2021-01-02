@@ -8,8 +8,9 @@ class Sine : public Oscillator
 public:
     //Constructor and destructor
     Sine(double frequency, double sampleRate) : Oscillator(frequency, sampleRate) {}
+    ~Sine() override {}
 
-    void tick();
+    void tick() override;
 };
 
 

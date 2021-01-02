@@ -6,7 +6,7 @@ class Oscillator
 {
 public:
     Oscillator(double frequency, double sampleRate) : frequency(frequency), sampleRate(sampleRate) {}
-
+    virtual ~Oscillator() {}
     //return the current sample
     float getSample();
 
@@ -14,6 +14,8 @@ public:
     void setAmplitude(float);
     void setFrequency(float frequency);
     float getFrequency();
+
+    virtual void tick() {}
 
 protected:
     double sampleRate;

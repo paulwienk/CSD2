@@ -1,4 +1,5 @@
 #define _WIN32_WINNT 0x0501
+
 #include <iostream>
 #include "mingw-std-threads/mingw.thread.h"
 #include <chrono>
@@ -15,73 +16,90 @@
 
 using namespace std::chrono_literals;
 
-int main(int argc,char **argv)
-{
+//van internet
+float mtof(int midiNote) {
+    float a = 440; //frequency of A (common value is 440Hz)
+    return (a / 32.0) * pow(2, ((midiNote - 9.0) / 12.0));
+}
 
-  // create a JackModule instance
-  JackModule jack;
+int main(int argc, char **argv) {
 
-  // init the jack, use program name as JACK client name
-  jack.init("example.exe");
-  double samplerate = jack.getSamplerate();
-  Sine sine(0, samplerate);
-  Square square(0, samplerate);
-  Saw saw(880, samplerate);
+    // create a JackModule instance
+    JackModule jack;
+
+    // init the jack, use program name as JACK client name
+    jack.init("example.exe");
+    double samplerate = jack.getSamplerate();
+    Sine sine(0, samplerate);
+    Square square(0, samplerate);
+    Saw saw(0, samplerate);
+
+    Oscillator* osc = &sine;
+
+    //assign a function to the JackModule::onProces
+    // lambda
+    jack.onProcess = [&osc](float *inBuf, float *outBuf, int nframes) {
+
+        static float amplitude = 0.15;
+
+        for (unsigned int i = 0; i < nframes; i++) {
+            outBuf[i] = osc->getSample() * amplitude;
+            osc->tick();
+        }
+
+        return 0;
+    };
+
+    jack.autoConnect();
+
+    bool keepMelodyThreadActive = true;
+
+    std::vector<int> notes = {60, 62, 64, 65, 67, 69, 71, 72};
+
+    // maak melody thread (start meteen)
+    auto melodyThread = std::thread {
+            [&]() {
+                while (keepMelodyThreadActive) {
+                    for (auto note : notes) {
+                        osc->setAmplitude(1.0);
+                        osc->setFrequency(mtof(note));
+                        std::this_thread::sleep_for(200ms);
+                        osc->setAmplitude(0.0);
+                        std::this_thread::sleep_for(100ms);
+                    }
+                }
+            }
+    };
 
 
+    //keep the program running and listen for user input, q = quit
+    std::cout << "\n\nPress 'q' when you want to quit the program.\n";
+    bool running = true;
+    while (running) {
+        std::string input;
+        std::getline(std::cin, input);
 
+        if (input == "sine") {
+            osc = &sine;
+            std::cout << "Set to sine\n";
+        }
 
-  //assign a function to the JackModule::onProces
-  // lambda
-  jack.onProcess = [&sine, &square, &saw] (float *inBuf, float *outBuf, int nframes) {
+        if (input == "square") {
+            osc = &square;
+            std::cout << "Set to square\n";
+        }
 
-    static float amplitude = 0.15;
+        if (input == "saw") {
+            osc = &saw;
+            std::cout << "Set to saw\n";
+        }
 
-    for(unsigned int i = 0; i < nframes; i++) {
-      outBuf[i] = sine.getSample() * amplitude;
-      sine.tick();
-      outBuf[i] += square.getSample() * amplitude;
-      square.tick();
-      outBuf[i] += saw.getSample() * amplitude;
-      saw.tick();
+        if (input == "quit") {
+            running = false;
+        }
+
+        input.clear();
     }
-
-
-
-    return 0;
-  };
-
-  jack.autoConnect();
-
-  bool keepMelodyThreadActive = true;
-
-  // maak melody thread (start meteen)
-  auto melodyThread = std::thread {
-      [&]() {
-          while (keepMelodyThreadActive) {
-              saw.setAmplitude (0.0);
-              std::this_thread::sleep_for (100ms);
-              saw.setAmplitude (1.0);
-              std::this_thread::sleep_for (100ms);
-
-          }
-      }
-  };
-
-
-  //keep the program running and listen for user input, q = quit
-  std::cout << "\n\nPress 'q' when you want to quit the program.\n";
-  bool running = true;
-  while (running)
-  {
-    switch (std::cin.get())
-    {
-      case 'q':
-        running = false;
-        jack.end();
-        break;
-    }
-  }
 
     // als je klaar bent vanaf the UI (via 'quit' command bijvoorbeeld)
     keepMelodyThreadActive = false;
@@ -89,6 +107,6 @@ int main(int argc,char **argv)
     // wacht totdat de thread klaar is voordat het programma stopt
     melodyThread.join();
 
-  //end the program
-  return 0;
+    //end the program
+    return 0;
 } // main()

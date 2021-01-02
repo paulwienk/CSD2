@@ -28,6 +28,7 @@ void Oscillator::setFrequency(float frequency)
 {
     // TODO add check to see if parameter is valid
     this->frequency = frequency;
+    phaseIncrement = frequency / sampleRate;
 }
 
 

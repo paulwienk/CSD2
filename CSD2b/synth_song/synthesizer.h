@@ -12,14 +12,16 @@ class SquareSynthesizer : public Synthesizer {
     void tick() override;
     void noteOn(int midiNote) override {
         square.setFrequency;
-
     }
     void noteOff() override;
 
     Square square;
 };
 
+//van internet
 float mtof(int midiNote) {
     int a = 440; //frequency of A (common value is 440Hz)
-    return (a / 32) * pow(2, ((note - 9) / 12));
+    return (a / 32) * pow(2, ((midiNote - 9) / 12));
 }
+
+

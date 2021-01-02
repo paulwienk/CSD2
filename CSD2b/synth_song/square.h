@@ -8,8 +8,9 @@ class Square : public Oscillator
 public:
     //Constructor and destructor
     Square(double frequency, double sampleRate) : Oscillator(frequency, sampleRate) {}
+    ~Square() override {}
 
-    void tick();
+    void tick() override;
 };
 
 

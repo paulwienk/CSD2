@@ -6,6 +6,6 @@
 void Sine::tick()
 {
     updatePhase();
-    sample = sin(M_PI * 2 * phase);
+    sample = (sin(M_PI * 2 * phase)) * amplitude;
 }
 
