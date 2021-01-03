@@ -99,6 +99,7 @@ int main(int argc, char **argv) {
             std::cout << "Set to sine\n";
         }
 
+
         if (input == "square") {
             synth = &squareSynthesizer;
             std::cout << "Set to square\n";
@@ -117,6 +118,13 @@ int main(int argc, char **argv) {
         if (input == "quit") {
             running = false;
         }
+
+        // everything except the commands above returns an error
+        if (input != "sine" && input != "square" && input != "saw" &&
+            input != "rm" && input != "quit") {
+            std::cout << "Wrong input. Try again\n";
+        }
+
 
     }
 
