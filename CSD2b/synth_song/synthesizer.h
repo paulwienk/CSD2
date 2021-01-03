@@ -10,12 +10,16 @@ float mtof(int midiNote) {
 class Synthesizer {
 public:
     virtual ~Synthesizer() = default;
+
     virtual void noteOn(int midiNote) {}
+
     virtual void noteOff() {}
 
     virtual float getSample() {}
+
     virtual void tick() {}
 };
+
 
 class SquareSynthesizer : public Synthesizer {
 public:
@@ -43,4 +47,101 @@ public:
     }
 
     Square square;
+};
+
+
+class SineSynthesizer : public Synthesizer {
+public:
+    SineSynthesizer(double sampleRate) : sine(1, sampleRate) {
+        //zodat ie niet meteen aangaat
+        sine.setAmplitude(0.0);
+    }
+
+    void tick() override {
+        sine.tick();
+    }
+
+    float getSample() override {
+        return sine.getSample();
+    }
+
+    void noteOn(int midiNote) override {
+        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
+        sine.setFrequency(mtof(midiNote));
+        sine.setAmplitude(1.0);
+    }
+
+    void noteOff() override {
+        sine.setAmplitude(0.0);
+    }
+
+    Sine sine;
+};
+
+
+class SawSynthesizer : public Synthesizer {
+public:
+    SawSynthesizer(double sampleRate) : saw(1, sampleRate) {
+        //zodat ie niet meteen aangaat
+        saw.setAmplitude(0.0);
+    }
+
+    void tick() override {
+        saw.tick();
+    }
+
+    float getSample() override {
+        return saw.getSample();
+    }
+
+    void noteOn(int midiNote) override {
+        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
+        saw.setFrequency(mtof(midiNote));
+        saw.setAmplitude(1.0);
+    }
+
+    void noteOff() override {
+        saw.setAmplitude(0.0);
+    }
+
+    Saw saw;
+};
+
+
+class RmSynthesizer : public Synthesizer {
+public:
+    RmSynthesizer(double sampleRate) : carrier(1, sampleRate), modulator(1, sampleRate) {
+        //zodat ie niet meteen aangaat
+        carrier.setAmplitude(0.0);
+        modulator.setAmplitude(0.0);
+    }
+
+    Sine carrier;
+    Sine modulator;
+    double ratio = 0.05;
+    float sample = 0;
+
+    void tick() override {
+        carrier.tick();
+        modulator.tick();
+        sample = modulator.getSample() * carrier.getSample();
+    }
+
+    float getSample() override {
+        return sample;
+    }
+
+    void noteOn(int midiNote) override {
+        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
+        carrier.setFrequency(mtof(midiNote));
+        carrier.setAmplitude(1.0);
+        modulator.setFrequency(mtof(midiNote) * ratio);
+        modulator.setAmplitude(1.0);
+    }
+
+    void noteOff() override {
+        carrier.setAmplitude(0.0);
+        modulator.setAmplitude(0.0);
+    }
+
 };

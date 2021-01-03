@@ -1,8 +1,6 @@
-#define _WIN32_WINNT 0x0501
-
 #include <iostream>
-#include "mingw-std-threads/mingw.thread.h"
 #include <chrono>
+#include "thread.h"
 #include "jack_module.h"
 #include "math.h"
 #include "sine.h"
@@ -15,7 +13,7 @@
 
 #define PI_2 6.28318530717959
 
-
+// voor ms
 using namespace std::chrono_literals;
 
 int main(int argc, char **argv) {
@@ -27,7 +25,13 @@ int main(int argc, char **argv) {
     jack.init("example.exe");
     double samplerate = jack.getSamplerate();
 
-    SquareSynthesizer synth(samplerate);
+    SquareSynthesizer squareSynthesizer(samplerate);
+    SineSynthesizer sineSynthesizer(samplerate);
+    SawSynthesizer sawSynthesizer(samplerate);
+    RmSynthesizer rmSynthesizer(samplerate);
+
+    // by default
+    Synthesizer *synth = &sineSynthesizer;
 
     //assign a function to the JackModule::onProces
     // lambda
@@ -35,9 +39,9 @@ int main(int argc, char **argv) {
 
         static float amplitude = 0.15;
 
-        for (unsigned int i = 0; i < nframes; i++) {
-            outBuf[i] = synth.getSample() * amplitude;
-            synth.tick();
+        for (int i = 0; i < nframes; i++) {
+            outBuf[i] = synth->getSample() * amplitude;
+            synth->tick();
         }
 
         return 0;
@@ -51,21 +55,22 @@ int main(int argc, char **argv) {
     auto notes = melodyGenerator.notes;
 
 
-
-
-
     // maak melody thread (start meteen)
-    auto melodyThread = std::thread {
+    // [&] is een referentie naar alles inde bovenliggende scope
+    auto melodyThread = std::thread{
             [&]() {
                 while (keepMelodyThreadActive) {
+                    // note is elke keer de volgende note in de notes array
+                    // range based for loop
                     for (auto note : notes) {
-                        //osc->setAmplitude(1.0);
-                        //osc->setFrequency(mtof(note));
-                        synth.noteOn(note);
+                        synth->noteOn(note);
                         std::this_thread::sleep_for(200ms);
-                        //osc->setAmplitude(0.0);
-                        synth.noteOff();
-                        std::this_thread::sleep_for(400ms);
+                        synth->noteOff();
+                        std::this_thread::sleep_for(100ms);
+
+                        if (!keepMelodyThreadActive)
+                            return;
+                        // thread stopt hier als de if wordt uitgevoerd
                     }
                 }
             }
@@ -78,30 +83,35 @@ int main(int argc, char **argv) {
     while (running) {
         std::string input;
         std::getline(std::cin, input);
-/*
+
         if (input == "sine") {
-            osc = &sine;
+            synth = &sineSynthesizer;
             std::cout << "Set to sine\n";
         }
 
         if (input == "square") {
-            osc = &square;
+            synth = &squareSynthesizer;
             std::cout << "Set to square\n";
         }
 
         if (input == "saw") {
-            synth = &saw;
+            synth = &sawSynthesizer;
             std::cout << "Set to saw\n";
         }
-*/
+
+        if (input == "rm") {
+            synth = &rmSynthesizer;
+            std::cout << "Set to ring modulation\n";
+        }
+
         if (input == "quit") {
             running = false;
         }
 
-        input.clear();
     }
 
     // als je klaar bent vanaf the UI (via 'quit' command)
+    // dan is hij uit de loop hierboven
     keepMelodyThreadActive = false;
 
     // wacht totdat de thread klaar is voordat het programma stopt

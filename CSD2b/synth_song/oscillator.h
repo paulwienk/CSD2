@@ -1,19 +1,18 @@
-#ifndef SYNTH_SONG_OSCILLATOR_H
-#define SYNTH_SONG_OSCILLATOR_H
+#pragma once
 
-
-class Oscillator
-{
+class Oscillator {
 public:
     Oscillator(double frequency, double sampleRate) : frequency(frequency), sampleRate(sampleRate) {}
+
     virtual ~Oscillator() {}
+
     //return the current sample
     float getSample();
 
     //getters and setters
     void setAmplitude(float);
+
     void setFrequency(float frequency);
-    float getFrequency();
 
     virtual void tick() {}
 
@@ -28,5 +27,3 @@ protected:
 
     void updatePhase();
 };
-
-#endif //SYNTH_SONG_OSCILLATOR_H

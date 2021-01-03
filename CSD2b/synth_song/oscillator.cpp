@@ -1,43 +1,37 @@
 #define _USE_MATH_DEFINES
+
 #include <math.h>
 #include "oscillator.h"
 
 // modulo function by Wouter Ensink
-template <typename T>
-inline constexpr T modulo (T dividend, const T divisor) noexcept
-{
+template<typename T>
+inline constexpr T modulo(T dividend, const T divisor) noexcept {
     while (dividend >= divisor)
         dividend -= divisor;
 
     return dividend;
 }
 
+// zodat de phase tussen 0 en 1 blijft en dat de phase ook verandert
+void Oscillator::updatePhase() {
+    // phase wordt dus steeds hoger
+    phase = modulo(phase + phaseIncrement, 1.0);
+}
 
+// returnt de huidige sample
 float Oscillator::getSample() {
     return sample;
 }
 
 
-void Oscillator::updatePhase()
-{
-    phase = modulo (phase + phaseIncrement, 1.0);
-}
-
 //getters and setters
-void Oscillator::setFrequency(float frequency)
-{
-    // TODO add check to see if parameter is valid
+void Oscillator::setFrequency(float frequency) {
     this->frequency = frequency;
+    // phaseIncrement wordt aangepast op basis van de nieuwe frequentie
     phaseIncrement = frequency / sampleRate;
 }
 
 
-float Oscillator::getFrequency()
-{
-    return frequency;
-}
-
-void Oscillator::setAmplitude(float amp)
-{
+void Oscillator::setAmplitude(float amp) {
     amplitude = amp;
 }
