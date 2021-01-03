@@ -96,23 +96,23 @@ int main(int argc, char **argv) {
 
         if (input == "sine") {
             synth = &sineSynthesizer;
-            std::cout << "Set to sine\n";
+            std::cout << "Set to sine\n\n";
         } else if (input == "square") {
             synth = &squareSynthesizer;
-            std::cout << "Set to square\n";
+            std::cout << "Set to square\n\n";
         } else if (input == "saw") {
             synth = &sawSynthesizer;
-            std::cout << "Set to saw\n";
+            std::cout << "Set to saw\n\n";
         } else if (input == "rm") {
             synth = &rmSynthesizer;
-            std::cout << "Set to ring modulation\n";
+            std::cout << "Set to ring modulation\n\n";
         } else if (input == "quit") {
             running = false;
         }
 
             // everything except the commands above returns an error
         else {
-            std::cout << "Wrong input. Try again\n";
+            std::cout << "Wrong input. Try again\n\n";
         }
 
 
