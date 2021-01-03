@@ -12,9 +12,8 @@ inline constexpr T modulo(T dividend, const T divisor) noexcept {
     return dividend;
 }
 
-// zodat de phase tussen 0 en 1 blijft en dat de phase ook verandert
+// function that updates the phase and keeps the phase between 0 and 1 with the modulo function
 void Oscillator::updatePhase() {
-    // phase wordt dus steeds hoger
     phase = modulo(phase + phaseIncrement, 1.0);
 }
 
@@ -24,10 +23,9 @@ float Oscillator::getSample() {
 }
 
 
-//getters and setters
 void Oscillator::setFrequency(float frequency) {
     this->frequency = frequency;
-    // phaseIncrement wordt aangepast op basis van de nieuwe frequentie
+    // phaseIncrement changes based on the new frequency
     phaseIncrement = frequency / sampleRate;
 }
 

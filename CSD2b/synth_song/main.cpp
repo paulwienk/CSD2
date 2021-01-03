@@ -1,3 +1,6 @@
+// main template by Ciska Vriezenga
+
+
 #include <iostream>
 #include <chrono>
 #include "thread.h"
@@ -13,7 +16,7 @@
 
 #define PI_2 6.28318530717959
 
-// voor ms
+// to make the milliseconds work in line 71
 using namespace std::chrono_literals;
 
 int main(int argc, char **argv) {
@@ -25,6 +28,7 @@ int main(int argc, char **argv) {
     jack.init("example.exe");
     double samplerate = jack.getSamplerate();
 
+    // creating objects of the synthesizers
     SquareSynthesizer squareSynthesizer(samplerate);
     SineSynthesizer sineSynthesizer(samplerate);
     SawSynthesizer sawSynthesizer(samplerate);
@@ -34,7 +38,6 @@ int main(int argc, char **argv) {
     Synthesizer *synth = &sineSynthesizer;
 
     //assign a function to the JackModule::onProces
-    // lambda
     jack.onProcess = [&synth](float *inBuf, float *outBuf, int nframes) {
 
         static float amplitude = 0.15;
@@ -49,20 +52,24 @@ int main(int argc, char **argv) {
 
     jack.autoConnect();
 
+
     bool keepMelodyThreadActive = true;
 
+    // creating an object of the melody generator
     MelodyGenerator melodyGenerator;
     auto notes = melodyGenerator.notes;
 
 
-    // maak melody thread (start meteen)
-    // [&] is een referentie naar alles inde bovenliggende scope
+    // creating melody thread
     auto melodyThread = std::thread{
             [&]() {
                 while (keepMelodyThreadActive) {
-                    // note is elke keer de volgende note in de notes array
+
                     // range based for loop
                     for (auto note : notes) {
+
+                        // pointer to the noteOn function of the active synthesizer.
+                        // the noteOn contains 'note', which is the next note in the array.
                         synth->noteOn(note);
                         std::this_thread::sleep_for(200ms);
                         synth->noteOff();
@@ -70,15 +77,18 @@ int main(int argc, char **argv) {
 
                         if (!keepMelodyThreadActive)
                             return;
-                        // thread stopt hier als de if wordt uitgevoerd
+
                     }
                 }
             }
     };
 
 
-    //keep the program running and listen for user input, q = quit
-    std::cout << "\n\nPress 'quit' when you want to quit the program.\n";
+    //keep the program running and listen for user input
+    std::cout << "\n\nWelcome to Paul's Synth Song!\n\n";
+    std::cout << "Type 'sine', 'saw' or 'square' to activate the eponymous synthesizer.\n";
+    std::cout << "Type 'rm' to activate a ring modulated synthesizer.\n\n";
+    std::cout << "Type 'quit' to exit the program.\n\n";
     bool running = true;
     while (running) {
         std::string input;
@@ -110,13 +120,10 @@ int main(int argc, char **argv) {
 
     }
 
-    // als je klaar bent vanaf the UI (via 'quit' command)
-    // dan is hij uit de loop hierboven
+    // setting the thread to non-active after you quit the program
     keepMelodyThreadActive = false;
-
-    // wacht totdat de thread klaar is voordat het programma stopt
     melodyThread.join();
 
     //end the program
     return 0;
-} // main()
+}

@@ -3,11 +3,10 @@
 #include <iostream>
 #include "oscillator.h"
 
+// sine class, derived from base class Oscillator
 class Sine : public Oscillator {
 public:
-    //Constructor and destructor
     Sine(double frequency, double sampleRate) : Oscillator(frequency, sampleRate) {}
-
 
     void tick() override;
 };

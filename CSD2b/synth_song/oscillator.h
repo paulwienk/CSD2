@@ -1,5 +1,6 @@
 #pragma once
 
+// Oscillator base class
 class Oscillator {
 public:
     Oscillator(double frequency, double sampleRate) : frequency(frequency), sampleRate(sampleRate) {}

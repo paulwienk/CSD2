@@ -1,6 +1,6 @@
 #pragma once
 
-//van internet
+// MIDI to frequency formula by YuxiUx
 float mtof(int midiNote) {
     float a = 440.0;
     return (a / 32.0) * pow(2.0, ((midiNote - 9.0) / 12.0));
@@ -21,10 +21,10 @@ public:
 };
 
 
+// creating a square synthesizer which plays a square wave
 class SquareSynthesizer : public Synthesizer {
 public:
     SquareSynthesizer(double sampleRate) : square(1, sampleRate) {
-        //zodat ie niet meteen aangaat
         square.setAmplitude(0.0);
     }
 
@@ -37,7 +37,7 @@ public:
     }
 
     void noteOn(int midiNote) override {
-        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
+        //setFrequency gets the midiNote, which is converted to hertz by the mtof function
         square.setFrequency(mtof(midiNote));
         square.setAmplitude(1.0);
     }
@@ -50,10 +50,10 @@ public:
 };
 
 
+// creating a sine synthesizer which plays a sine wave
 class SineSynthesizer : public Synthesizer {
 public:
     SineSynthesizer(double sampleRate) : sine(1, sampleRate) {
-        //zodat ie niet meteen aangaat
         sine.setAmplitude(0.0);
     }
 
@@ -66,7 +66,6 @@ public:
     }
 
     void noteOn(int midiNote) override {
-        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
         sine.setFrequency(mtof(midiNote));
         sine.setAmplitude(1.0);
     }
@@ -79,10 +78,10 @@ public:
 };
 
 
+// creating a saw synthesizer which plays a saw wave
 class SawSynthesizer : public Synthesizer {
 public:
     SawSynthesizer(double sampleRate) : saw(1, sampleRate) {
-        //zodat ie niet meteen aangaat
         saw.setAmplitude(0.0);
     }
 
@@ -95,7 +94,6 @@ public:
     }
 
     void noteOn(int midiNote) override {
-        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
         saw.setFrequency(mtof(midiNote));
         saw.setAmplitude(1.0);
     }
@@ -108,10 +106,10 @@ public:
 };
 
 
+// creating a ring modulation based synthesizer which plays a tone based on ring modulation
 class RmSynthesizer : public Synthesizer {
 public:
     RmSynthesizer(double sampleRate) : carrier(1, sampleRate), modulator(1, sampleRate) {
-        //zodat ie niet meteen aangaat
         carrier.setAmplitude(0.0);
         modulator.setAmplitude(0.0);
     }
@@ -132,7 +130,6 @@ public:
     }
 
     void noteOn(int midiNote) override {
-        //setFrequency krijgt de frequency omgerekend naar midi mee als argument dmv mtof functie
         carrier.setFrequency(mtof(midiNote));
         carrier.setAmplitude(1.0);
         modulator.setFrequency(mtof(midiNote) * ratio);
