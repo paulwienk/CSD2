@@ -97,31 +97,21 @@ int main(int argc, char **argv) {
         if (input == "sine") {
             synth = &sineSynthesizer;
             std::cout << "Set to sine\n";
-        }
-
-
-        if (input == "square") {
+        } else if (input == "square") {
             synth = &squareSynthesizer;
             std::cout << "Set to square\n";
-        }
-
-        if (input == "saw") {
+        } else if (input == "saw") {
             synth = &sawSynthesizer;
             std::cout << "Set to saw\n";
-        }
-
-        if (input == "rm") {
+        } else if (input == "rm") {
             synth = &rmSynthesizer;
             std::cout << "Set to ring modulation\n";
-        }
-
-        if (input == "quit") {
+        } else if (input == "quit") {
             running = false;
         }
 
-        // everything except the commands above returns an error
-        if (input != "sine" && input != "square" && input != "saw" &&
-            input != "rm" && input != "quit") {
+            // everything except the commands above returns an error
+        else {
             std::cout << "Wrong input. Try again\n";
         }
 

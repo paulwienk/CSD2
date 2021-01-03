@@ -20,9 +20,9 @@ public:
 protected:
     double sampleRate;
     double frequency;
-    float amplitude = 1.0;
+    double amplitude = 1.0;
     double phase = 0.0;
-    float sample = 0.0;
+    double sample = 0.0;
 
     double phaseIncrement = frequency / sampleRate;
 
