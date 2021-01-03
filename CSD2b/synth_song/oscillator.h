@@ -29,6 +29,4 @@ protected:
     void updatePhase();
 };
 
-
-
 #endif //SYNTH_SONG_OSCILLATOR_H

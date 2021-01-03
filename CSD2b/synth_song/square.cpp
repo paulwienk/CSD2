@@ -9,4 +9,3 @@ void Square::tick()
     if (phase < 0.5) {sample = 1 * amplitude;}
     else {sample = -1 * amplitude;}
 }
-

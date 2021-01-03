@@ -9,18 +9,14 @@
 #include "square.h"
 #include "saw.h"
 #include "oscillator.h"
+#include "melodyGenerator.h"
+#include "synthesizer.h"
 
 
 #define PI_2 6.28318530717959
 
 
 using namespace std::chrono_literals;
-
-//van internet
-float mtof(int midiNote) {
-    float a = 440; //frequency of A (common value is 440Hz)
-    return (a / 32.0) * pow(2, ((midiNote - 9.0) / 12.0));
-}
 
 int main(int argc, char **argv) {
 
@@ -30,21 +26,18 @@ int main(int argc, char **argv) {
     // init the jack, use program name as JACK client name
     jack.init("example.exe");
     double samplerate = jack.getSamplerate();
-    Sine sine(0, samplerate);
-    Square square(0, samplerate);
-    Saw saw(0, samplerate);
 
-    Oscillator* osc = &sine;
+    SquareSynthesizer synth(samplerate);
 
     //assign a function to the JackModule::onProces
     // lambda
-    jack.onProcess = [&osc](float *inBuf, float *outBuf, int nframes) {
+    jack.onProcess = [&synth](float *inBuf, float *outBuf, int nframes) {
 
         static float amplitude = 0.15;
 
         for (unsigned int i = 0; i < nframes; i++) {
-            outBuf[i] = osc->getSample() * amplitude;
-            osc->tick();
+            outBuf[i] = synth.getSample() * amplitude;
+            synth.tick();
         }
 
         return 0;
@@ -54,18 +47,25 @@ int main(int argc, char **argv) {
 
     bool keepMelodyThreadActive = true;
 
-    std::vector<int> notes = {60, 62, 64, 65, 67, 69, 71, 72};
+    MelodyGenerator melodyGenerator;
+    auto notes = melodyGenerator.notes;
+
+
+
+
 
     // maak melody thread (start meteen)
     auto melodyThread = std::thread {
             [&]() {
                 while (keepMelodyThreadActive) {
                     for (auto note : notes) {
-                        osc->setAmplitude(1.0);
-                        osc->setFrequency(mtof(note));
+                        //osc->setAmplitude(1.0);
+                        //osc->setFrequency(mtof(note));
+                        synth.noteOn(note);
                         std::this_thread::sleep_for(200ms);
-                        osc->setAmplitude(0.0);
-                        std::this_thread::sleep_for(100ms);
+                        //osc->setAmplitude(0.0);
+                        synth.noteOff();
+                        std::this_thread::sleep_for(400ms);
                     }
                 }
             }
@@ -73,12 +73,12 @@ int main(int argc, char **argv) {
 
 
     //keep the program running and listen for user input, q = quit
-    std::cout << "\n\nPress 'q' when you want to quit the program.\n";
+    std::cout << "\n\nPress 'quit' when you want to quit the program.\n";
     bool running = true;
     while (running) {
         std::string input;
         std::getline(std::cin, input);
-
+/*
         if (input == "sine") {
             osc = &sine;
             std::cout << "Set to sine\n";
@@ -90,10 +90,10 @@ int main(int argc, char **argv) {
         }
 
         if (input == "saw") {
-            osc = &saw;
+            synth = &saw;
             std::cout << "Set to saw\n";
         }
-
+*/
         if (input == "quit") {
             running = false;
         }
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
         input.clear();
     }
 
-    // als je klaar bent vanaf the UI (via 'quit' command bijvoorbeeld)
+    // als je klaar bent vanaf the UI (via 'quit' command)
     keepMelodyThreadActive = false;
 
     // wacht totdat de thread klaar is voordat het programma stopt
