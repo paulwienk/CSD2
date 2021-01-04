@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="3df3fc4d-b4a4-4571-9318-c7dd9c7eed81" name="synthsong1" defaultType="MAKE">
+      <configuration id="8770e11a-0c37-4839-8330-93dd82585926" name="synthsong1" toolchainName="MinGW">
+        <build type="MAKE">
+          <make targetName="example" />
+        </build>
+      </configuration>
+    </target>
+    <target id="f04627e4-b386-42d4-b490-ec3ff6d3ec69" name="Unnamed" defaultType="MAKE">
+      <configuration id="593f13c5-a2bd-4989-8695-036514958e1c" name="Unnamed" />
+    </target>
+  </component>
+</project>
