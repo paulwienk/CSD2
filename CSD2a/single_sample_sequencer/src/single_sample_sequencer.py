@@ -1,6 +1,6 @@
 import time
 import os
-import simpleaudio as sa
+
 
 path = os.path.basename(__file__)
 path = __file__.replace(path, 'kick.wav')
@@ -52,7 +52,7 @@ def durations_to_timestamps(durations):
 
     answer = [0]
     for i in added:
-        answer.append(i + answer[-1])
+        answer.append(i + answer[- 1])
 
     return answer
 
@@ -69,7 +69,7 @@ def timestamps_to_ms(timestamps):
 
     answer = [0]
     for i in ms:
-        answer.append(i + answer[-1])
+        answer.append(i + answer[- 1])
 
     return answer
 

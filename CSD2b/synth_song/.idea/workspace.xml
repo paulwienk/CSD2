@@ -15,8 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19672262-7558-4941-952d-e7ae7ac0bf24" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../CSD2a/event_based_sequencer/src/pythonProject4/.idea/pythonProject4.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../CSD2a/event_based_sequencer/src/pythonProject5/.idea/pythonProject5.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/example.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/customTargets.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/customTargets.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,14 +80,14 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Makefile" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="CLionExternalConfigurable" />
   </component>
-  <component name="RunManager" selected="Makefile.example">
-    <configuration name="example" type="CLionNativeAppRunConfigurationType" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="synth_song" TARGET_NAME="example" CONFIG_NAME="example" version="1" RUN_PATH="$PROJECT_DIR$/src/example.exe">
+  <component name="RunManager" selected="Makefile Application.example">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="synthsong" type="CLionNativeAppRunConfigurationType" singleton="false" REDIRECT_INPUT="false" ELEVATE="false" WORKING_DIR="file://$PROJECT_DIR$/src" PASS_PARENT_ENVS_2="true" PROJECT_NAME="synth_song" TARGET_NAME="example" CONFIG_NAME="example" version="1" RUN_PATH="$PROJECT_DIR$/src/example.exe">
@@ -97,43 +100,22 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/src/Makefile" target="clean" workingDirectory="" arguments="">
+    <configuration name="Unnamed" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" nameIsGenerated="true">
+      <makefile filename="D:\hku\jaar2\CSD2\CSD2b\synth_song\src\Makefile" target="example" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="example (1)" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/src/Makefile" target="example" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="example" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="C:\Users\paulw\hku\jaar2\CSD2\CSD2b\synth_song\src\Makefile" target="example" workingDirectory="C:\Users\paulw\hku\jaar2\CSD2\CSD2b\synth_song\src" arguments="">
+    <configuration default="true" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="D:\hku\jaar2\CSD2\CSD2b\synth_song\src\Makefile" target="example" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Makefile.example" />
-      <item itemvalue="Makefile.clean" />
-      <item itemvalue="Makefile.example (1)" />
+      <item itemvalue="Makefile.Unnamed" />
       <item itemvalue="Makefile Application.example" />
-      <item itemvalue="Makefile Application.synthsong" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Makefile.example" />
-        <item itemvalue="Makefile.example (1)" />
-        <item itemvalue="Makefile.clean" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -154,7 +136,9 @@
       <workItem from="1609695082237" duration="10498000" />
       <workItem from="1609706491532" duration="403000" />
       <workItem from="1609757260434" duration="6249000" />
-      <workItem from="1609777817144" duration="727000" />
+      <workItem from="1609777817144" duration="1327000" />
+      <workItem from="1613820613994" duration="2130000" />
+      <workItem from="1614007562349" duration="4300000" />
     </task>
     <servers />
   </component>

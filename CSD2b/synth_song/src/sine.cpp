@@ -8,5 +8,5 @@ void Sine::tick() {
     updatePhase();
 
     // calculations for the sine wave by Ciska Vriezenga.
-    sample = (sin(M_PI * 2 * phase)) * amplitude;
+    sample = (sin(M_PI * phase));
 }
