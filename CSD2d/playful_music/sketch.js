@@ -1,11 +1,22 @@
 //create a synth and connect it to the main output (your speakers)
 const synth = new Tone.Synth().toDestination();
 
-let currentColor = 255;
+let currentColor = 0;
 let currentThickness = 6;
 let currentFreq = 396;
+let mouseReleased = false;
+let lengthLine = 0;
 
-function setup() {
+var env = new Tone.Envelope({
+	                           "attack" : 0.1,
+	                           "decay" : 0.2,
+	                           "sustain" : 1,
+	                           "release" : 0.8,
+});
+
+
+function setup()
+{
   createCanvas(1200, 600);
   background(104);
 
@@ -27,7 +38,6 @@ function setup() {
   largeThickness.position(1135, 100);
   largeThickness.mousePressed(changeThicknessToLarge)
 
-  // create buttons to change the color of the line
   blackButton = createButton('Black');
   blackButton.position(0, 0);
   blackButton.mousePressed(changeColorToBlack);
@@ -53,66 +63,91 @@ function setup() {
   whiteButton.mousePressed(changeColorToWhite);
 }
 
-function clearCanvas() {
+function clearCanvas()
+{
   clear();
   background(104);
 }
 
-// functions to change the thickness
-function changeThicknessToSmall() {
+function changeThicknessToSmall()
+{
   currentThickness = 1;
 }
 
-function changeThicknessToMedium() {
+function changeThicknessToMedium()
+{
   currentThickness = 6;
 }
 
-function changeThicknessToLarge() {
+function changeThicknessToLarge()
+{
   currentThickness = 12;
 }
 
-// functions to change the colors and frequency
-function changeColorToBlack() {
+function changeColorToBlack()
+{
   currentColor = 0;
   currentFreq = 396;
 }
 
-function changeColorToBlue() {
+function changeColorToBlue()
+{
   currentColor = color(0, 0, 255);
   currentFreq = 417;
 }
 
-function changeColorToRed() {
+function changeColorToRed()
+{
   currentColor = color(255, 0, 0);
   currentFreq = 528;
 }
 
-function changeColorToGreen() {
+function changeColorToGreen()
+{
   currentColor = color(0, 255, 0);
   currentFreq = 639;
 }
 
-function changeColorToYellow() {
+function changeColorToYellow()
+{
   currentColor = color(255, 255, 0);
   currentFreq = 741;
 }
 
-function changeColorToWhite() {
+function changeColorToWhite()
+{
   currentColor = 255;
   currentFreq = 852;
 }
 
-function draw() {
+function mousePressed()
+{
+  const now = Tone.now();
+  synth.triggerAttack(currentFreq, now);
+  synth.triggerRelease(now + 0.1);
+}
+
+function mouseClicked()
+{
+  mouseReleased = true;
+}
+
+function draw()
+{
   stroke(currentColor);
   strokeWeight(currentThickness);
 
-  if (mouseIsPressed === true) {
+  if (mouseIsPressed === true)
+  {
     line(mouseX, mouseY, pmouseX, pmouseY);
-    console.log(mouseX);
-
-    const now = Tone.now();
-    synth.triggerAttack(currentFreq, now);
-    synth.triggerRelease(now + 0.0001);
+    lengthLine++;
   }
 
+  if (mouseReleased === true)
+  {
+    let highest = max(lengthLine);
+    lengthLine = 0;
+    mouseReleased = false;
+    console.log("start release", highest)
+  }
 }
