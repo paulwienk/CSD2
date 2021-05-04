@@ -1,5 +1,9 @@
-//create a synth and connect it to the main output (your speakers)
-const synth = new Tone.Synth().toDestination();
+// by Paul Wienk
+
+// TO DO:
+// - filtering
+// - multithreading
+// - smoother adsr
 
 let currentColor = 0;
 let currentThickness = 6;
@@ -7,13 +11,14 @@ let currentFreq = 396;
 let mouseReleased = false;
 let lengthLine = 0;
 
-var env = new Tone.Envelope({
-	                           "attack" : 0.1,
-	                           "decay" : 0.2,
-	                           "sustain" : 1,
-	                           "release" : 0.8,
-});
+let adsr = new Tone.AmplitudeEnvelope({
+"attack": 2.0,
+"decay": 0.2,
+"sustain": 0.8,
+"release": 2.0
+}).toMaster();
 
+var oscillator = new Tone.Oscillator(currentFreq, "sine").connect(adsr).start();
 
 function setup()
 {
@@ -120,13 +125,6 @@ function changeColorToWhite()
   currentFreq = 852;
 }
 
-function mousePressed()
-{
-  const now = Tone.now();
-  synth.triggerAttack(currentFreq, now);
-  synth.triggerRelease(now + 0.1);
-}
-
 function mouseClicked()
 {
   mouseReleased = true;
@@ -145,9 +143,13 @@ function draw()
 
   if (mouseReleased === true)
   {
-    let highest = max(lengthLine);
+    let lengthLineMax = max(lengthLine) / 20;
+
+		oscillator.frequency.value = currentFreq;
+		adsr.triggerAttackRelease(lengthLineMax);
+
     lengthLine = 0;
     mouseReleased = false;
-    console.log("start release", highest)
+    console.log("start release", lengthLineMax, currentFreq);
   }
 }
