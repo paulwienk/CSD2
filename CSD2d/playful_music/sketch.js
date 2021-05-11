@@ -6,17 +6,17 @@
 // - smoother adsr
 // - button clicking
 
-let currentColor = 0;
-let currentThickness = 6;
-let currentFreq = 396;
+let currentLineColor = 0;
+let currentLineThickness = 6;
 let mouseReleased = false;
 let lengthLine = 0;
+let colorIsBlue = false;
+let colorIsBlack = false;
 
 let drawingCanvasWidth = 1000;
 let drawingCanvasHeight = 600;
-let drawingCanvasStartX = 80;
-let drawingCanvasStartY = 0;
-
+let drawingCanvasTopLeftX = 80;
+let drawingCanvasTopLeftY = 0;
 
 const adsr = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
@@ -29,21 +29,31 @@ const filter = new Tone.Filter(350, "lowpass").toDestination();
 
 const autoFilter = new Tone.AutoFilter("8n").toDestination().start();
 
-const oscillator = new Tone.Oscillator(currentFreq, "sine")
+const oscillatorBlack = new Tone.Oscillator(396, "sine")
+const oscillatorBlue = new Tone.Oscillator(417, "sine")
+const oscillatorRed = new Tone.Oscillator(528, "sine")
+const oscillatorGreen = new Tone.Oscillator(639, "sine")
+const oscillatorYellow = new Tone.Oscillator(741, "sine")
+const oscillatorWhite = new Tone.Oscillator(852, "sine")
 
-oscillator.chain(adsr, filter, autoFilter, Tone.Destination);
-
+oscillatorBlack.chain(adsr, filter, autoFilter, Tone.Destination);
+oscillatorBlue.chain(adsr, filter, autoFilter, Tone.Destination);
+oscillatorRed.chain(adsr, filter, autoFilter, Tone.Destination);
+oscillatorGreen.chain(adsr, filter, autoFilter, Tone.Destination);
+oscillatorYellow.chain(adsr, filter, autoFilter, Tone.Destination);
+oscillatorWhite.chain(adsr, filter, autoFilter, Tone.Destination);
 
 function setup()
 {
   createCanvas(1200, 600);
   background(30);
 
+  // drawing canvas
   fill(104);
-  rect(drawingCanvasStartX, drawingCanvasStartY,
+  rect(drawingCanvasTopLeftX, drawingCanvasTopLeftY,
        drawingCanvasWidth, drawingCanvasHeight);
 
-  // create clear button to clear the casnvas
+  // create clear button to clear the canvas
   clearLines = createButton('Clear');
   clearLines.position(10, 500);
   clearLines.mousePressed(clearCanvas)
@@ -88,58 +98,57 @@ function setup()
 function clearCanvas()
 {
   clear();
-  background(104);
+  background(30);
+  fill(104);
+  rect(drawingCanvasTopLeftX, drawingCanvasTopLeftY,
+       drawingCanvasWidth, drawingCanvasHeight);
 }
 
 function changeThicknessToSmall()
 {
-  currentThickness = 1;
+  currentLineThickness = 1;
 }
 
 function changeThicknessToMedium()
 {
-  currentThickness = 6;
+  currentLineThickness = 6;
 }
 
 function changeThicknessToLarge()
 {
-  currentThickness = 12;
+  currentLineThickness = 12;
 }
 
 function changeColorToBlack()
 {
-  currentColor = 0;
-  currentFreq = 396;
+  currentLineColor = 0;
+  colorIsBlack = true;
 }
 
 function changeColorToBlue()
 {
-  currentColor = color(0, 0, 255);
-  currentFreq = 417;
+  currentLineColor = color(0, 0, 255);
+  colorIsBlue = true;
 }
 
 function changeColorToRed()
 {
-  currentColor = color(255, 0, 0);
-  currentFreq = 528;
+  currentLineColor = color(255, 0, 0);
 }
 
 function changeColorToGreen()
 {
-  currentColor = color(0, 255, 0);
-  currentFreq = 639;
+  currentLineColor = color(0, 255, 0);
 }
 
 function changeColorToYellow()
 {
-  currentColor = color(255, 255, 0);
-  currentFreq = 741;
+  currentLineColor = color(255, 255, 0);
 }
 
 function changeColorToWhite()
 {
-  currentColor = 255;
-  currentFreq = 852;
+  currentLineColor = 255;
 }
 
 function mouseClicked()
@@ -147,32 +156,48 @@ function mouseClicked()
   mouseReleased = true;
 }
 
+
 function draw()
 {
-  stroke(currentColor);
-  strokeWeight(currentThickness);
+  stroke(currentLineColor);
+  strokeWeight(currentLineThickness);
 
   if ((mouseIsPressed === true) &&
-      (mouseX > drawingCanvasStartX) &&
-      (mouseX < drawingCanvasStartX + drawingCanvasWidth) &&
-      (mouseY > drawingCanvasStartY) &&
-      (mouseY < drawingCanvasStartY + drawingCanvasHeight))
+      (mouseX > drawingCanvasTopLeftX) &&
+      (mouseX < drawingCanvasTopLeftX + drawingCanvasWidth) &&
+      (mouseY > drawingCanvasTopLeftY) &&
+      (mouseY < drawingCanvasTopLeftY + drawingCanvasHeight))
   {
     line(mouseX, mouseY, pmouseX, pmouseY);
     lengthLine++;
   }
 
-  if (mouseReleased === true)
+  if ((mouseReleased === true) &&
+      (mouseX > drawingCanvasTopLeftX) &&
+      (mouseX < drawingCanvasTopLeftX + drawingCanvasWidth) &&
+      (mouseY > drawingCanvasTopLeftY) &&
+      (mouseY < drawingCanvasTopLeftY + drawingCanvasHeight))
   {
+    // lengthLineMax takes the highest value of lengthLine, which is the time in
+    // seconds of the duration the mouse is pressed to draw te line
     var lengthLineMax = max(lengthLine) / 20;
 
-    oscillator.start();
+    if (colorIsBlack === true)
+    {
+    oscillatorBlack.start();
+    colorIsBlack = false;
+    }
 
-		oscillator.frequency.value = currentFreq;
+    if (colorIsBlue === true)
+    {
+    oscillatorBlue.start();
+    colorIsBlue = false;
+    }
+
 		adsr.triggerAttackRelease(lengthLineMax);
 
     lengthLine = 0;
     mouseReleased = false;
-    console.log("start release", lengthLineMax, currentFreq);
+    console.log("start release", lengthLineMax, colorIsBlack);
   }
 }
