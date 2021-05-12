@@ -4,17 +4,11 @@
 // - filtering
 // - smoother adsr
 
+let currentColor = "black";
 let currentLineColor = 0;
 let currentLineThickness = 6;
 let mouseReleased = false;
 let lengthLine = 0;
-
-let colorIsBlack = true;
-let colorIsBlue = false;
-let colorIsRed = false;
-let colorIsGreen = false;
-let colorIsYellow = false;
-let colorIsWhite = false;
 
 let drawingCanvasWidth = 1000;
 let drawingCanvasHeight = 600;
@@ -63,9 +57,10 @@ const adsrWhite = new Tone.AmplitudeEnvelope({
 "release": 10.0
 }).toDestination();
 
+const reverb = new Tone.Reverb(30).toDestination();
 const filter = new Tone.Filter(350, "lowpass").toDestination();
-
-const autoFilter = new Tone.AutoFilter("8n").toDestination().start();
+const autoPanner = new Tone.AutoPanner(2).toDestination().start();
+const autoFilter = new Tone.AutoFilter(5).toDestination().start();
 
 const oscillatorBlack = new Tone.Oscillator(396, "sine")
 const oscillatorBlue = new Tone.Oscillator(417, "sine")
@@ -74,7 +69,7 @@ const oscillatorGreen = new Tone.Oscillator(639, "sine")
 const oscillatorYellow = new Tone.Oscillator(741, "sine")
 const oscillatorWhite = new Tone.Oscillator(852, "sine")
 
-oscillatorBlack.chain(adsrBlack, filter, autoFilter, Tone.Destination);
+oscillatorBlack.chain(adsrBlack, autoPanner, autoFilter, reverb, Tone.Destination);
 oscillatorBlue.chain(adsrBlue, filter, autoFilter, Tone.Destination);
 oscillatorRed.chain(adsrRed, filter, autoFilter, Tone.Destination);
 oscillatorGreen.chain(adsrGreen, filter, autoFilter, Tone.Destination);
@@ -160,67 +155,37 @@ function changeThicknessToLarge()
 function changeColorToBlack()
 {
   currentLineColor = 0;
-  colorIsBlack = true;
-  colorIsBlue = false;
-  colorIsRed = false;
-  colorIsGreen = false;
-  colorIsYellow = false;
-  colorIsWhite = false;
+  currentColor = "black";
 }
 
 function changeColorToBlue()
 {
   currentLineColor = color(0, 0, 255);
-  colorIsBlue = true;
-  colorIsBlack = false;
-  colorIsRed = false;
-  colorIsGreen = false;
-  colorIsYellow = false;
-  colorIsWhite = false;
+  currentColor = "blue";
 }
 
 function changeColorToRed()
 {
   currentLineColor = color(255, 0, 0);
-  colorIsRed = true;
-  colorIsBlack = false;
-  colorIsBlue = false;
-  colorIsGreen = false;
-  colorIsYellow = false;
-  colorIsWhite = false;
+  currentColor = "red";
 }
 
 function changeColorToGreen()
 {
   currentLineColor = color(0, 255, 0);
-  colorIsGreen = true;
-  colorIsBlack = false;
-  colorIsBlue = false;
-  colorIsRed = false;
-  colorIsYellow = false;
-  colorIsWhite = false;
+  currentColor = "green";
 }
 
 function changeColorToYellow()
 {
   currentLineColor = color(255, 255, 0);
-  colorIsYellow = true;
-  colorIsBlack = false;
-  colorIsBlue = false;
-  colorIsGreen = false;
-  colorIsRed = false;
-  colorIsWhite = false;
+  currentColor = "yellow";
 }
 
 function changeColorToWhite()
 {
   currentLineColor = 255;
-  colorIsWhite = true;
-  colorIsBlack = false;
-  colorIsBlue = false;
-  colorIsRed = false;
-  colorIsGreen = false;
-  colorIsYellow = false;
+  currentColor = "white";
 }
 
 function mouseClicked()
@@ -254,37 +219,37 @@ function draw()
     // seconds of the duration the mouse is pressed to draw te line
     var lengthLineMax = max(lengthLine) / 20;
 
-    if (colorIsBlack === true)
+    if (currentColor === "black")
     {
     oscillatorBlack.start();
     adsrBlack.triggerAttackRelease(lengthLineMax);
     }
 
-    if (colorIsBlue === true)
+    if (currentColor === "blue")
     {
     oscillatorBlue.start();
     adsrBlue.triggerAttackRelease(lengthLineMax);
     }
 
-    if (colorIsRed === true)
+    if (currentColor === "red")
     {
     oscillatorRed.start();
     adsrRed.triggerAttackRelease(lengthLineMax);
     }
 
-    if (colorIsGreen === true)
+    if (currentColor === "green")
     {
     oscillatorGreen.start();
     adsrGreen.triggerAttackRelease(lengthLineMax);
     }
 
-    if (colorIsYellow === true)
+    if (currentColor === "yellow")
     {
     oscillatorYellow.start();
     adsrYellow.triggerAttackRelease(lengthLineMax);
     }
 
-    if (colorIsWhite === true)
+    if (currentColor === "white")
     {
     oscillatorWhite.start();
     adsrWhite.triggerAttackRelease(lengthLineMax);
@@ -292,7 +257,6 @@ function draw()
 
     lengthLine = 0;
     mouseReleased = false;
-    console.log("start release", lengthLineMax, colorIsBlack);
+    console.log("start release", lengthLineMax);
   }
-  console.log("black = ", colorIsBlack, "white = ", colorIsWhite)
 }
