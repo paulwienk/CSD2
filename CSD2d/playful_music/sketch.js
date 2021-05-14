@@ -17,8 +17,8 @@ let drawingCanvasTopLeftY = 0;
 
 const adsrBlack = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
@@ -57,24 +57,29 @@ const adsrWhite = new Tone.AmplitudeEnvelope({
 "release": 10.0
 }).toDestination();
 
-const reverb = new Tone.Reverb(30).toDestination();
-const filter = new Tone.Filter(350, "lowpass").toDestination();
-const autoPanner = new Tone.AutoPanner(2).toDestination().start();
-const autoFilter = new Tone.AutoFilter(5).toDestination().start();
+// effect constructors
+const reverb = new Tone.Reverb().toMaster();
+const panner = new Tone.Panner().toMaster();
+const autoPanner = new Tone.AutoPanner().toMaster();
+const autoFilter = new Tone.AutoFilter().toMaster();
+const volume = new Tone.Volume(-20).toMaster();
 
-const oscillatorBlack = new Tone.Oscillator(396, "sine")
-const oscillatorBlue = new Tone.Oscillator(417, "sine")
-const oscillatorRed = new Tone.Oscillator(528, "sine")
-const oscillatorGreen = new Tone.Oscillator(639, "sine")
-const oscillatorYellow = new Tone.Oscillator(741, "sine")
-const oscillatorWhite = new Tone.Oscillator(852, "sine")
+// oscillator constructors
+const oscillatorBlack = new Tone.Oscillator(396, "sine");
+const oscillatorBlue = new Tone.Oscillator(417, "sine");
+const oscillatorRed = new Tone.Oscillator(528, "sine");
+const oscillatorGreen = new Tone.Oscillator(639, "sine");
+const oscillatorYellow = new Tone.Oscillator(741, "sine");
+const oscillatorWhite = new Tone.Oscillator(852, "sine");
 
-oscillatorBlack.chain(adsrBlack, autoPanner, autoFilter, reverb, Tone.Destination);
-oscillatorBlue.chain(adsrBlue, filter, autoFilter, Tone.Destination);
-oscillatorRed.chain(adsrRed, filter, autoFilter, Tone.Destination);
-oscillatorGreen.chain(adsrGreen, filter, autoFilter, Tone.Destination);
-oscillatorYellow.chain(adsrYellow, filter, autoFilter, Tone.Destination);
-oscillatorWhite.chain(adsrWhite, filter, autoFilter, Tone.Destination);
+// effect routing
+oscillatorBlack.chain(adsrBlack, autoPanner, autoFilter, Tone.Master);
+oscillatorBlue.chain(adsrBlue, autoPanner, autoFilter, Tone.Master);
+oscillatorRed.chain(adsrRed, autoPanner, autoFilter, Tone.Master);
+oscillatorGreen.chain(adsrGreen, autoPanner, autoFilter, Tone.Master);
+oscillatorYellow.chain(adsrYellow, autoPanner, autoFilter, Tone.Master);
+oscillatorWhite.chain(adsrWhite, autoPanner, autoFilter, Tone.Master);
+
 
 function setup()
 {
@@ -193,11 +198,16 @@ function mouseClicked()
   mouseReleased = true;
 }
 
-
 function draw()
 {
   stroke(currentLineColor);
   strokeWeight(currentLineThickness);
+
+  let xValue = mouseX / 80;
+  let yValue = mouseY / 80;
+  let randomAutoFilterFrequency = random(1.0, 10.0);
+  let randomAutoPannerFrequency = random(1.0, 10.0);
+  let randomDecay = random(1.0, 10.0)
 
   if ((mouseIsPressed === true) &&
       (mouseX > drawingCanvasTopLeftX) &&
@@ -217,7 +227,16 @@ function draw()
   {
     // lengthLineMax takes the highest value of lengthLine, which is the time in
     // seconds of the duration the mouse is pressed to draw te line
-    var lengthLineMax = max(lengthLine) / 20;
+    let lengthLineMax = max(lengthLine) / 20;
+
+    reverb.wet = 1;
+    reverb.decay = randomDecay;
+
+    autoFilter.frequency.value = randomAutoFilterFrequency;
+    autoFilter.start();
+
+    autoPanner.frequency.value = randomAutoPannerFrequency;
+    autoPanner.start();
 
     if (currentColor === "black")
     {
