@@ -1,20 +1,19 @@
 // by Paul Wienk
 
-// TO DO:
-// - filtering
-// - smoother adsr
-
 let currentColor = "black";
 let currentLineColor = 0;
 let currentLineThickness = 6;
-let mouseReleased = false;
+let canvasColor = 104;
 let lengthLine = 0;
+let mouseReleased = false;
+let eraseMode = false;
 
 let drawingCanvasWidth = 1000;
 let drawingCanvasHeight = 600;
 let drawingCanvasTopLeftX = 80;
 let drawingCanvasTopLeftY = 0;
 
+// adsr constructors
 const adsrBlack = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
 "decay": 1.0,
@@ -24,45 +23,42 @@ const adsrBlack = new Tone.AmplitudeEnvelope({
 
 const adsrBlue = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
 const adsrRed = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
 const adsrGreen = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
 const adsrYellow = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
 const adsrWhite = new Tone.AmplitudeEnvelope({
 "attack": 2.0,
-"decay": 0.2,
-"sustain": 0.8,
+"decay": 1.0,
+"sustain": 1.0,
 "release": 10.0
 }).toDestination();
 
 // effect constructors
-const reverb = new Tone.Reverb().toMaster();
-const panner = new Tone.Panner().toMaster();
 const autoPanner = new Tone.AutoPanner().toMaster();
 const autoFilter = new Tone.AutoFilter().toMaster();
-const volume = new Tone.Volume(-20).toMaster();
 
 // oscillator constructors
 const oscillatorBlack = new Tone.Oscillator(396, "sine");
@@ -86,7 +82,7 @@ function setup()
   createCanvas(1200, 600);
   background(30);
 
-  // drawing canvas
+  // create drawing canvas
   fill(104);
   rect(drawingCanvasTopLeftX, drawingCanvasTopLeftY,
        drawingCanvasWidth, drawingCanvasHeight);
@@ -96,6 +92,12 @@ function setup()
   clearLines.position(10, 500);
   clearLines.mousePressed(clearCanvas)
 
+  // create erase button to erase the lines if necessary
+  eraser = createButton('Eraser')
+  eraser.position(10, 550);
+  eraser.mousePressed(eraseLines)
+
+  // create button to change the thickness of the line
   smallThickness = createButton('Small');
   smallThickness.position(1100, 0);
   smallThickness.mousePressed(changeThicknessToSmall)
@@ -108,6 +110,11 @@ function setup()
   largeThickness.position(1100, 100);
   largeThickness.mousePressed(changeThicknessToLarge)
 
+  extraLargeThickness = createButton('Extra large');
+  extraLargeThickness.position(1100, 150);
+  extraLargeThickness.mousePressed(changeThicknessToExtraLarge)
+
+  // create button to change the color of the line
   blackButton = createButton('Black');
   blackButton.position(10, 0);
   blackButton.mousePressed(changeColorToBlack);
@@ -142,6 +149,12 @@ function clearCanvas()
        drawingCanvasWidth, drawingCanvasHeight);
 }
 
+function eraseLines()
+{
+  currentLineColor = canvasColor;
+  eraseMode = true;
+}
+
 function changeThicknessToSmall()
 {
   currentLineThickness = 1;
@@ -157,40 +170,51 @@ function changeThicknessToLarge()
   currentLineThickness = 12;
 }
 
+function changeThicknessToExtraLarge()
+{
+  currentLineThickness = 26;
+}
+
 function changeColorToBlack()
 {
   currentLineColor = 0;
   currentColor = "black";
+  eraseMode = false;
 }
 
 function changeColorToBlue()
 {
   currentLineColor = color(0, 0, 255);
   currentColor = "blue";
+  eraseMode = false;
 }
 
 function changeColorToRed()
 {
   currentLineColor = color(255, 0, 0);
   currentColor = "red";
+  eraseMode = false;
 }
 
 function changeColorToGreen()
 {
   currentLineColor = color(0, 255, 0);
   currentColor = "green";
+  eraseMode = false;
 }
 
 function changeColorToYellow()
 {
   currentLineColor = color(255, 255, 0);
   currentColor = "yellow";
+  eraseMode = false;
 }
 
 function changeColorToWhite()
 {
   currentLineColor = 255;
   currentColor = "white";
+  eraseMode = false;
 }
 
 function mouseClicked()
@@ -203,12 +227,12 @@ function draw()
   stroke(currentLineColor);
   strokeWeight(currentLineThickness);
 
-  let xValue = mouseX / 80;
-  let yValue = mouseY / 80;
+  // defining variables that will effect the parameters of the effects
+  let mouseCoordinate = ((mouseX / 80) + (mouseY / 80)) / 2;
   let randomAutoFilterFrequency = random(1.0, 10.0);
   let randomAutoPannerFrequency = random(1.0, 10.0);
-  let randomDecay = random(1.0, 10.0)
 
+  // drawing lines
   if ((mouseIsPressed === true) &&
       (mouseX > drawingCanvasTopLeftX) &&
       (mouseX < drawingCanvasTopLeftX + drawingCanvasWidth) &&
@@ -219,7 +243,8 @@ function draw()
     lengthLine++;
   }
 
-  if ((mouseReleased === true) &&
+  // generate sound after line is drawn
+  if ((mouseReleased && eraseMode === false) &&
       (mouseX > drawingCanvasTopLeftX) &&
       (mouseX < drawingCanvasTopLeftX + drawingCanvasWidth) &&
       (mouseY > drawingCanvasTopLeftY) &&
@@ -228,10 +253,9 @@ function draw()
     // lengthLineMax takes the highest value of lengthLine, which is the time in
     // seconds of the duration the mouse is pressed to draw te line
     let lengthLineMax = max(lengthLine) / 20;
+    let lengthADSR = (lengthLineMax + mouseCoordinate) / 2;
 
-    reverb.wet = 1;
-    reverb.decay = randomDecay;
-
+    // setting frequency values
     autoFilter.frequency.value = randomAutoFilterFrequency;
     autoFilter.start();
 
@@ -241,41 +265,41 @@ function draw()
     if (currentColor === "black")
     {
     oscillatorBlack.start();
-    adsrBlack.triggerAttackRelease(lengthLineMax);
+    adsrBlack.triggerAttackRelease(lengthADSR);
     }
 
     if (currentColor === "blue")
     {
     oscillatorBlue.start();
-    adsrBlue.triggerAttackRelease(lengthLineMax);
+    adsrBlue.triggerAttackRelease(lengthADSR);
     }
 
     if (currentColor === "red")
     {
     oscillatorRed.start();
-    adsrRed.triggerAttackRelease(lengthLineMax);
+    adsrRed.triggerAttackRelease(lengthADSR);
     }
 
     if (currentColor === "green")
     {
     oscillatorGreen.start();
-    adsrGreen.triggerAttackRelease(lengthLineMax);
+    adsrGreen.triggerAttackRelease(lengthADSR);
     }
 
     if (currentColor === "yellow")
     {
     oscillatorYellow.start();
-    adsrYellow.triggerAttackRelease(lengthLineMax);
+    adsrYellow.triggerAttackRelease(lengthADSR);
     }
 
     if (currentColor === "white")
     {
     oscillatorWhite.start();
-    adsrWhite.triggerAttackRelease(lengthLineMax);
+    adsrWhite.triggerAttackRelease(lengthADSR);
     }
 
     lengthLine = 0;
     mouseReleased = false;
-    console.log("start release", lengthLineMax);
+    console.log("release time =", lengthADSR);
   }
 }
