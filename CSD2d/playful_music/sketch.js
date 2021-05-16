@@ -14,49 +14,15 @@ let drawingCanvasTopLeftX = 80;
 let drawingCanvasTopLeftY = 0;
 
 // adsr constructors
-const adsrBlack = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
-
-const adsrBlue = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
-
-const adsrRed = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
-
-const adsrGreen = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
-
-const adsrYellow = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
-
-const adsrWhite = new Tone.AmplitudeEnvelope({
-"attack": 2.0,
-"decay": 1.0,
-"sustain": 1.0,
-"release": 10.0
-}).toDestination();
+const adsrBlack = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
+const adsrBlue = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
+const adsrRed = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
+const adsrGreen = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
+const adsrYellow = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
+const adsrWhite = new Tone.AmplitudeEnvelope(2.0, 1.0, 1.0, 10.0).toMaster();
 
 // effect constructors
+const panner = new Tone.Panner(-1).toMaster();
 const autoPanner = new Tone.AutoPanner().toMaster();
 const autoFilter = new Tone.AutoFilter().toMaster();
 
@@ -69,12 +35,12 @@ const oscillatorYellow = new Tone.Oscillator(741, "sine");
 const oscillatorWhite = new Tone.Oscillator(852, "sine");
 
 // effect routing
-oscillatorBlack.chain(adsrBlack, autoPanner, autoFilter, Tone.Master);
-oscillatorBlue.chain(adsrBlue, autoPanner, autoFilter, Tone.Master);
-oscillatorRed.chain(adsrRed, autoPanner, autoFilter, Tone.Master);
-oscillatorGreen.chain(adsrGreen, autoPanner, autoFilter, Tone.Master);
-oscillatorYellow.chain(adsrYellow, autoPanner, autoFilter, Tone.Master);
-oscillatorWhite.chain(adsrWhite, autoPanner, autoFilter, Tone.Master);
+oscillatorBlack.chain(adsrBlack, autoFilter, autoPanner, Tone.Master);
+oscillatorBlue.chain(adsrBlue, autoFilter, autoPanner, Tone.Master);
+oscillatorRed.chain(adsrRed, autoFilter, autoPanner, Tone.Master);
+oscillatorGreen.chain(adsrGreen, autoFilter, autoPanner, Tone.Master);
+oscillatorYellow.chain(adsrYellow, autoFilter, autoPanner, Tone.Master);
+oscillatorWhite.chain(adsrWhite, autoFilter, autoPanner, Tone.Master);
 
 
 function setup()
@@ -229,8 +195,8 @@ function draw()
 
   // defining variables that will effect the parameters of the effects
   let mouseCoordinate = ((mouseX / 80) + (mouseY / 80)) / 2;
-  let randomAutoFilterFrequency = random(1.0, 10.0);
-  let randomAutoPannerFrequency = random(1.0, 10.0);
+  let autoFilterFrequency = (random(0.1, 1.0)) + (mouseCoordinate / 10);
+  let autoPannerFrequency = (random(0.1, 1.0)) + (mouseCoordinate / 8);
 
   // drawing lines
   if ((mouseIsPressed === true) &&
@@ -252,14 +218,16 @@ function draw()
   {
     // lengthLineMax takes the highest value of lengthLine, which is the time in
     // seconds of the duration the mouse is pressed to draw te line
-    let lengthLineMax = max(lengthLine) / 20;
+    let lengthLineMax = max(lengthLine) / 10;
     let lengthADSR = (lengthLineMax + mouseCoordinate) / 2;
 
     // setting frequency values
-    autoFilter.frequency.value = randomAutoFilterFrequency;
+    autoFilter.frequency.value = autoFilterFrequency;
     autoFilter.start();
 
-    autoPanner.frequency.value = randomAutoPannerFrequency;
+    adsrBlack.connect(panner);
+
+    autoPanner.frequency.value = autoPannerFrequency;
     autoPanner.start();
 
     if (currentColor === "black")
