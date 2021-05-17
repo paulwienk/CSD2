@@ -7,8 +7,8 @@ empty-example/
 .lastUpdate.txt
 LICENSE
 favicon.ico
-index.html
 npm-debug.log
 oscLib.js
 oscServer.js
 package.json
+csdosc
