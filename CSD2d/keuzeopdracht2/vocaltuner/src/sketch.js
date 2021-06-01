@@ -3,41 +3,41 @@
 // locate CREPE pitch detection model url
 const model_url = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models/models/pitch-detection/crepe/';
 
-let pitch, mic;
+let pitch, mic, randomNote, goalNote, goalFrequency;
 let currentFrequency = 0.0;
 let canvasWidth = 360;
 let canvasHeigth = 640;
 let goalLineDifference = 10;
-let randomNote, goalNote, goalFrequency;
+let currentOctave = 3;
 
 // define notes with their frequencies
 let notes = [
   {
-    note: 'A3',
+    note: 'A',
     frequency: 220.0
   },
   {
-    note: 'B3',
+    note: 'B',
     frequency: 246.9
   },
   {
-    note: 'C3',
+    note: 'C',
     frequency: 130.8
   },
   {
-    note: 'D3',
+    note: 'D',
     frequency: 146.8
   },
   {
-    note: 'E3',
+    note: 'E',
     frequency: 164.8
   },
   {
-    note: 'F3',
+    note: 'F',
     frequency: 174.6
   },
   {
-    note: 'G3',
+    note: 'G',
     frequency: 196.0
   },
 ];
@@ -51,6 +51,14 @@ function setup()
   mic = new p5.AudioIn();
   mic.start(detectPitch);
 
+  octaveShiftUp = createButton('octave shift up');
+  octaveShiftUp.position(5, 0);
+  octaveShiftUp.mousePressed(shiftOctaveUp);
+
+  octaveShiftDown = createButton('octave shift down');
+  octaveShiftDown.position(233, 0);
+  octaveShiftDown.mousePressed(shiftOctaveDown);
+
   // picks a random object from the notes array
   randomNote = int(random(notes.length - 1));
 
@@ -59,9 +67,18 @@ function setup()
   goalFrequency = -notes[randomNote].frequency
 }
 
-function changeOctave()
+// shift octave one up
+function shiftOctaveUp()
 {
-  goalFrequency = -notes[randomNote].frequency * 2
+  goalFrequency = goalFrequency * 2
+  currentOctave = currentOctave + 1;
+}
+
+// shift octave one down
+function shiftOctaveDown()
+{
+  goalFrequency = goalFrequency / 2
+  currentOctave = currentOctave - 1;
 }
 
 // detects the pitch based on the CREPE model
@@ -76,7 +93,8 @@ function createGoalLine()
 {
   line(0, goalFrequency + goalLineDifference, canvasWidth, goalFrequency + goalLineDifference)
   line(0, goalFrequency - goalLineDifference, canvasWidth, goalFrequency - goalLineDifference)
-  text(goalNote, width / 2, goalFrequency - 30)
+  text(goalNote, width / 2.15, goalFrequency - 30)
+  text(currentOctave, width / 1.85, goalFrequency - 30 )
 }
 
 function draw()
@@ -84,18 +102,14 @@ function draw()
   background(130);
 
   // flips the coördinate system so coördinate 0 is in the lower left corner
-  // therefore some drawing variables are negative
+  // therefore some values of drawing variables are negative
   translate(0, 640);
 
   // show the current frequency that is heard
   textAlign(CENTER, CENTER);
   fill(255);
   textSize(32);
-  text(currentFrequency.toFixed(1), width / 2, height - 700);
-
-  octaveShift = createButton('octave shift');
-  octaveShift.position(0, 0);
-  octaveShift.mousePressed(changeOctave);
+  text(currentFrequency.toFixed(1), width / 2, -30);
 
   // draw the line of the current frequency that is heard
   stroke(0);
