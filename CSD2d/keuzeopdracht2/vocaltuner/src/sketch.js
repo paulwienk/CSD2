@@ -12,6 +12,7 @@ let currentOctave = 3;
 let timer = 3;
 let currentFrequencyLineColor = [255, 30, 0];
 let insideGoalRange = false;
+let pitchHistory = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 // define notes with their frequencies
 let notes = [
@@ -95,6 +96,8 @@ function setup()
   goalFrequency = -notes[randomNote].frequency
 
   playVoiceOver();
+
+  setInterval(pitchUpdate, 100);
 }
 
 // detects the pitch based on the CREPE model
@@ -131,14 +134,21 @@ function modelLoaded()
   pitch.getPitch(gotPitch);
 }
 
+// creating a buffer for the previous pitches and shifts it around
+function pitchUpdate()
+{
+  pitchHistory[9] = -currentFrequency;
+  pitchHistory.shift();
+}
+
 // define the goal line
 function createGoalLine()
 {
   // lower goal line
-  line(0, goalFrequency + goalLineDifference, canvasWidth, goalFrequency +                      goalLineDifference);
+  line(0, goalFrequency + goalLineDifference, canvasWidth, goalFrequency +                          goalLineDifference);
 
   // upper goal line
-  line(0, goalFrequency - goalLineDifference, canvasWidth, goalFrequency -                      goalLineDifference);
+  line(0, goalFrequency - goalLineDifference, canvasWidth, goalFrequency -                          goalLineDifference);
 
   // display the current note
   text(goalNote, width / 2.15, goalFrequency - 30);
@@ -183,6 +193,7 @@ function checksRightPitch()
   {
     timer--
     currentFrequencyLineColor = [0, 255, 0];
+    console.log(timer);
 
     // if this happens, 3 seconds have passed and the next note starts
     if (timer === 0)
@@ -192,6 +203,12 @@ function checksRightPitch()
         // creates new note
         createNewNote();
       }
+  }
+
+  // if you go outside the goal range, the timer will reset to 3
+  if (insideGoalRange === false)
+  {
+    timer = 3;
   }
 }
 
@@ -261,7 +278,7 @@ function shiftOctaveDown()
 
 function draw()
 {
-  background(130);
+  background(40);
 
   // flips the coördinate system so coördinate 0 is in the lower left corner
   // therefore some values of drawing variables are negative
@@ -277,7 +294,14 @@ function draw()
 
   // draw the line of the current frequency that is heard
   stroke(currentFrequencyLineColor);
-  line(0, -currentFrequency, canvasWidth, -currentFrequency);
+  line(canvasWidth / 2, -currentFrequency, canvasWidth, -currentFrequency);
+
+  // draws the line of the previous detected pitches on the left of the current frequency line
+  for (let i = 0; i < pitchHistory.length - 1; ++i)
+    {
+      let deltaX = canvasWidth / ((pitchHistory.length - 1) * 2)
+      line(i * deltaX, pitchHistory[i], (i + 1) * deltaX, pitchHistory[i + 1]);
+    }
 
   // draw the goal line
   stroke(255);
