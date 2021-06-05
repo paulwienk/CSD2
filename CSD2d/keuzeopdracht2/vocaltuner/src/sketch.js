@@ -9,12 +9,12 @@ let canvasWidth = 360;
 let canvasHeigth = 640;
 let goalLineDifference = 10;
 let currentOctave = 3;
-let timer = 3;
-let currentFrequencyLineColor = [255, 30, 0];
+let timer = 0;
 let insideGoalRange = false;
+let currentFrequencyLineColor = [255, 30, 0];
 let pitchHistory = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-// define notes with their frequencies
+// define notes with their frequencies and note names
 let notes = [
   {
     note: 'A',
@@ -46,7 +46,7 @@ let notes = [
   },
 ];
 
-// loading voice overs
+// loading voice overs of the notes
 function preload()
 {
   voiceOverA = loadSound('assets/voiceover_a.mp3');
@@ -95,8 +95,10 @@ function setup()
   goalNote = notes[randomNote].note
   goalFrequency = -notes[randomNote].frequency
 
+  // play the voice over of the first goal note
   playVoiceOver();
 
+  // triggering the pitch history every 100 ms
   setInterval(pitchUpdate, 100);
 }
 
@@ -145,10 +147,10 @@ function pitchUpdate()
 function createGoalLine()
 {
   // lower goal line
-  line(0, goalFrequency + goalLineDifference, canvasWidth, goalFrequency +                          goalLineDifference);
+  line(0, goalFrequency + goalLineDifference, canvasWidth, goalFrequency + goalLineDifference);
 
   // upper goal line
-  line(0, goalFrequency - goalLineDifference, canvasWidth, goalFrequency -                          goalLineDifference);
+  line(0, goalFrequency - goalLineDifference, canvasWidth, goalFrequency - goalLineDifference);
 
   // display the current note
   text(goalNote, width / 2.15, goalFrequency - 30);
@@ -186,29 +188,29 @@ function checksIfInsideGoalRange()
   }
 }
 
-// checks if you were inside the goal lines for 3 seconds
+// checks if your frequency is inside the goal lines for 3 seconds
 function checksRightPitch()
 {
-  if (insideGoalRange === true && frameCount % 60 == 0 && timer > 0)
+  if (insideGoalRange === true && frameCount % 60 == 0)
   {
-    timer--
+    timer++
     currentFrequencyLineColor = [0, 255, 0];
     console.log(timer);
 
     // if this happens, 3 seconds have passed and the next note starts
-    if (timer === 0)
+    if (timer === 3)
       {
-        timer = 3;
+        timer = 0;
 
         // creates new note
         createNewNote();
       }
   }
 
-  // if you go outside the goal range, the timer will reset to 3
+  // if you go outside the goal range, the timer will reset to 0
   if (insideGoalRange === false)
   {
-    timer = 3;
+    timer = 0;
   }
 }
 
@@ -306,6 +308,17 @@ function draw()
   // draw the goal line
   stroke(255);
   createGoalLine();
+
+  // draw the bar that tells you the progress of the time inside the goal range
+  stroke(255);
+  noFill();
+  rect(250, -40, 90, 20);
+
+  // draw the filling bar
+  noStroke();
+  fill(0, 255, 0);
+  let fillBar = 30 * timer;
+  rect(250, -40, fillBar, 20);
 
   checksRightPitch();
   checksIfInsideGoalRange();
