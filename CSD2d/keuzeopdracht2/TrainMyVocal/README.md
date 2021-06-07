@@ -7,3 +7,8 @@ Deze lijn moet je proberen binnen de range van de ‘goal noot’ te krijgen. Ku
 Door de mogelijkheid om de range van de goal noot smaller te maken (en dus nauwkeuriger), kan VocalTuner ook dienen als instrument tuner. Ook is er de mogelijkheid om een ander octaaf te kiezen van de huidige goal note.
 
 De goal note krijg je ook te horen door een voice over, zodat het ook speelbaar is voor blinden en slechtzienden.
+
+
+Ervaar de live demo hier:
+
+https://editor.p5js.org/paulwienk/sketches/n-k6tmlQa
